@@ -14,9 +14,8 @@
           opts: '=options'
         },
         link: function($scope, element, attrs, modelCtrl) {
-          var defaults, el, opts, required, _formatted, _getPicker, _init, _validateMax, _validateMin;
+          var defaults, el, opts, _formatted, _getPicker, _init, _validateMax, _validateMin;
           el = $(element);
-          required = _.has(attrs, 'required');
           defaults = {
             separator: ' - ',
             format: 'YYYY-MM-DD'
@@ -58,7 +57,7 @@
             return '';
           });
           modelCtrl.$parsers.unshift(function(val) {
-            if (!_.isObject(val) || !(_.has(val, 'startDate') && _.has(val, 'endDate'))) {
+            if (!angular.isObject(val) || !(val.hasOwnProperty('startDate') && val.hasOwnProperty('endDate'))) {
               return modelCtrl.$modelValue;
             }
             if ($scope.dateMin && val.startDate) {

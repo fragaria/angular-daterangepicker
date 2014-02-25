@@ -1,21 +1,22 @@
 {
-  "name": "angular-daterangepicker",
-  "version": "0.1.0",
-  "homepage": "TODO",
-  "authors": [
-    "Filip Vařecha <filip.varecha@fragaria.cz>",
-    "Lukáš Marek <lukas.marek@fragaria.cz>"
-  ],
-  "description": "Angular.js wrapper for Dan Grosmann's bootstrap date range picker (https://github.com/dangrossman/bootstrap-daterangepicker).",
-  "license": "Apache",
-  "private": false,
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "karma-coffee-preprocessor": "~0.1.0",
-    "karma": "~0.10.2",
-    "karma-junit-reporter": "~0.1.0",
-    "grunt-contrib-uglify": "^0.3.2"
-  }
+    "name": "angular-daterangepicker",
+    "version": "0.1.0",
+    "homepage": "TODO",
+    "authors": [
+        "Filip Vařecha <filip.varecha@fragaria.cz>",
+        "Tibor Kulčár <tibor.kulcar@fragaria.cz>",
+        "Lukáš Marek <lukas.marek@fragaria.cz>"
+    ],
+    "description": "Angular.js wrapper for Dan Grosmann's bootstrap date range picker (https://github.com/dangrossman/bootstrap-daterangepicker).",
+    "license": "Apache",
+    "private": false,
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-coffee": "~0.7.0",
+        "grunt-contrib-watch": "~0.5.3",
+        "karma-coffee-preprocessor": "~0.1.0",
+        "karma": "~0.10.2",
+        "karma-junit-reporter": "~0.1.0",
+        "grunt-contrib-uglify": "^0.3.2"
+    }
 }

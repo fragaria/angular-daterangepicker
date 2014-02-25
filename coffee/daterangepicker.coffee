@@ -9,7 +9,6 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', ($compile, $timeout
         opts: '=options'
     link: ($scope, element, attrs, modelCtrl) ->
         el = $(element)
-        required = _.has(attrs, 'required')
         defaults = {separator: ' - ', format: 'YYYY-MM-DD'}
 
         opts = angular.copy(defaults)
@@ -47,8 +46,8 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', ($compile, $timeout
         )
 
         modelCtrl.$parsers.unshift((val) ->
-            # Check if input is invalid.
-            if not _.isObject(val) or not (_.has(val, 'startDate') and _.has(val, 'endDate'))
+            # Check if input is valid.
+            if not angular.isObject(val) or not (val.hasOwnProperty('startDate') and val.hasOwnProperty('endDate'))
                 return modelCtrl.$modelValue
 
             # If min-max set, validate as well.
