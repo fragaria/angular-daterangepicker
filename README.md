@@ -6,6 +6,8 @@ Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.c
 ## Instalation
 This directive depends on [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker), [Bootstrap](http://getbootstrap.com), [Moment.js](http://momentjs.com/) and [jQuery](http://jquery.com/).
 
+All dependencies can be installed via Bower.
+
 ## Basic usage
 ```
 <script type="text/javascript" src="jquery.js"></script>
@@ -47,7 +49,8 @@ Min and max value can be set via additional attributes:
 
 The date picker can be later customized by passing `options` attribute.
 
-<input date-range-picker class="form-control date-picker" type="text" ng-model="date" min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
+<input date-range-picker class="form-control date-picker" type="text" ng-model="date" 
+min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
 
 
 ## Links
