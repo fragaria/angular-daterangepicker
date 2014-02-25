@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Daterange picker example</title>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/underscore/underscore.js"></script>
+    <!-- TODO Remove dependency -->
+    <script src="lib/momentjs/moment.js"></script>
+    <script src="lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="js/daterangepicker.js"></script>
+
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="lib/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h1>Daterange picker example</h1>
+
+    <div class="row">
+        <div class="col-md-6" ng-controller="TestCtrl">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="daterange1" class="control-label">Simple picker</label>
+                    <input date-range-picker id="daterange1" class="form-control date-picker" type="text"
+                           name="date" ng-model="date" required/>
+                </div>
+                <div class="form-group">
+                    <label for="daterange2" class="control-label">Picker with min and max date</label>
+                    <input date-range-picker id="daterange2" class="form-control date-picker" type="text"
+                           min="'2014-02-23'" max="'2015-02-25'" name="date" ng-model="date"
+                           required/>
+                </div>
+                <div class="form-group">
+                    <label for="daterange3" class="control-label">Picker with custom locale</label>
+                    <input date-range-picker id="daterange3" class="form-control date-picker" type="text"
+                           name="date" ng-model="date" options="opts" required/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script>
+    exampleApp = angular.module('example', ['daterangepicker'])
+    exampleApp.controller('TestCtrl', function ($scope) {
+        $scope.date = {startDate: null, endDate: null};
+        $scope.opts = {locale: {
+            applyClass: 'btn-green',
+            applyLabel: "Použít",
+            fromLabel: "Od",
+            toLabel: "Do",
+            cancelLabel: 'Zrušit',
+            customRangeLabel: 'Vlastní rozsah',
+            daysOfWeek: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
+            firstDay: 1,
+            monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
+        }};
+    });
+
+    angular.bootstrap(document, ['example'])
+</script>
+
+</html>
