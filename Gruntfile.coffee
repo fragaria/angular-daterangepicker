@@ -9,7 +9,7 @@ module.exports = (grunt) ->
                 options:
                     join: true
                 files:
-                    'js/daterangepicker.js': ['coffee/daterangepicker.coffee']
+                    'js/angular-daterangepicker.js': ['coffee/angular-daterangepicker.coffee']
 
         watch:
             files: ['index.html', 'coffee/*.coffee']
@@ -20,7 +20,7 @@ module.exports = (grunt) ->
                 sourceMap: true
             target:
                 files:
-                    'js/daterangepicker.min.js': ['js/daterangepicker.js']
+                    'js/angular-daterangepicker.min.js': ['js/angular-daterangepicker.js']
 
 
     grunt.loadNpmTasks("grunt-contrib-coffee")
