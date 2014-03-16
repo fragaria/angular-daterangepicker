@@ -3,22 +3,27 @@ Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.c
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
 
-## Instalation
+## Instalation via Bower
+The easiest way to install the picker is:
+```
+bower install angular-daterangepicker --save
+```
+## Manual instalation
 This directive depends on [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker), [Bootstrap](http://getbootstrap.com), [Moment.js](http://momentjs.com/) and [jQuery](http://jquery.com/).
-
-All dependencies can be installed via Bower.
+Download dependencies above and then use [minified](js/angular-daterangepicker.min.js) or [normal](angular-daterangepicker.js) version.
 
 ## Basic usage
+Assuming that bower installation directory is `bower_components`. In case of other installation directory, please update paths accordingly.
+
 ```
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="moment.js"></script>
-<script type="text/javascript" src="daterangepicker.js"></script>
-<script type="text/javascript" src="angular.js"></script>
-<script type="text/javascript" src="angular-daterangepicker.js"></script>
+<script src="bower_components/jquery/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/momentjs/moment.js"></script>
+<script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
 
-
-<link rel="stylesheet" type="text/css" href="bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="daterangepicker-bs3.css" />
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
 ```
 
 Prepare model in your controller. The model **must** have `startDate` and `endDate` attributes: 
