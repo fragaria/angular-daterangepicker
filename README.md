@@ -26,6 +26,12 @@ Assuming that bower installation directory is `bower_components`. In case of oth
 <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
 ```
 
+Declare dependency:
+
+```
+App = angular.module('app', ['daterangepicker']);
+```
+
 Prepare model in your controller. The model **must** have `startDate` and `endDate` attributes: 
 
 ```
