@@ -85,7 +85,7 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', ($compile, $timeout
 
         _init()
 
-        el.on('apply', (ev, picker) ->
+        el.on('apply.daterangepicker', (ev, picker) ->
             $timeout(->
                 $scope.$apply(->
                     modelCtrl.$setViewValue(

@@ -91,7 +91,7 @@
             return el.data('daterangepicker');
           };
           _init();
-          el.on('apply', function(ev, picker) {
+          el.on('apply.daterangepicker', function(ev, picker) {
             return $timeout(function() {
               return $scope.$apply(function() {
                 modelCtrl.$setViewValue({
