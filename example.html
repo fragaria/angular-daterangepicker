@@ -59,6 +59,12 @@
             firstDay: 1,
             monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
         }};
+
+
+        //Watch for date changes
+        $scope.$watch('date', function (newDate) {
+            console.log('New date set: ', newDate);
+        }, true);
     });
 
     angular.bootstrap(document, ['example'])
