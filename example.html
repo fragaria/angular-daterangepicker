@@ -47,7 +47,7 @@
 
 <script>
     exampleApp = angular.module('example', ['daterangepicker'])
-    exampleApp.controller('TestCtrl', function ($scope) {
+    exampleApp.controller('TestCtrl', function ($scope, $interval) {
         $scope.date = {startDate: null, endDate: null};
         $scope.opts = {locale: {
             applyClass: 'btn-green',
@@ -59,13 +59,20 @@
             daysOfWeek: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
             firstDay: 1,
             monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
-        }};
+
+        },
+        ranges: {
+      'Last 7 Days': [moment().subtract('days', 6), moment()],
+      'Last 30 Days': [moment().subtract('days', 29), moment()]
+    }
+      };
 
 
         //Watch for date changes
         $scope.$watch('date', function (newDate) {
             console.log('New date set: ', newDate);
         }, true);
+
     });
 
     angular.bootstrap(document, ['example'])

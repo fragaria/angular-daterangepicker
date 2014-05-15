@@ -79,22 +79,21 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', ($compile, $timeout
 
 
         _init = ->
-            el.daterangepicker(opts)
+            el.daterangepicker(opts, (start, end, label) ->
+              $timeout(->
+                  $scope.$apply(->
+                      modelCtrl.$setViewValue(
+                          startDate: start.toDate()
+                          endDate: end.toDate()
+                      )
+                      modelCtrl.$render()
+                  ))
+            )          
+
         _getPicker = ->
             el.data('daterangepicker')
 
         _init()
-
-        el.on('apply.daterangepicker', (ev, picker) ->
-            $timeout(->
-                $scope.$apply(->
-                    modelCtrl.$setViewValue(
-                        startDate: picker.startDate.toDate()
-                        endDate: picker.endDate.toDate()
-                    )
-                    modelCtrl.$render()
-                ))
-        )
 
         # If input is cleared manually, set dates to null.
         el.change(() ->
@@ -139,7 +138,3 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', ($compile, $timeout
                 _init()
             )
 ])
-
-
-
-
