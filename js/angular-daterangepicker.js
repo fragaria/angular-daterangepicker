@@ -85,23 +85,22 @@
             return el.val(_formatted(modelCtrl.$viewValue));
           };
           _init = function() {
-            return el.daterangepicker(opts);
+            return el.daterangepicker(opts, function(start, end, label) {
+              return $timeout(function() {
+                return $scope.$apply(function() {
+                  modelCtrl.$setViewValue({
+                    startDate: start.toDate(),
+                    endDate: end.toDate()
+                  });
+                  return modelCtrl.$render();
+                });
+              });
+            });
           };
           _getPicker = function() {
             return el.data('daterangepicker');
           };
           _init();
-          el.on('apply.daterangepicker', function(ev, picker) {
-            return $timeout(function() {
-              return $scope.$apply(function() {
-                modelCtrl.$setViewValue({
-                  startDate: picker.startDate.toDate(),
-                  endDate: picker.endDate.toDate()
-                });
-                return modelCtrl.$render();
-              });
-            });
-          });
           el.change(function() {
             if ($.trim(el.val()) === '') {
               return $timeout(function() {

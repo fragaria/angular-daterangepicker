@@ -1,7 +1,7 @@
 {
     "name": "angular-daterangepicker",
-    "version": "0.1.0",
-    "homepage": "TODO",
+    "version": "0.1.2",
+    "homepage": "https://github.com/fragaria/angular-daterangepicker",
     "authors": [
         "Filip Vařecha <filip.varecha@fragaria.cz>",
         "Tibor Kulčár <tibor.kulcar@fragaria.cz>",
