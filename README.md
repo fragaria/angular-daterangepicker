@@ -1,4 +1,6 @@
 # Date Range Picker for Angular and Bootstrap
+![Dependencies](https://david-dm.org/fragaria/angular-daterangepicker.png)
+
 Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
@@ -64,9 +66,9 @@ The date picker can be later customized by passing `options` attribute.
 min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
 
 ## Compatibility
-Version 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
+Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
 
-Version 0.1.0 work with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.2 and older. 
+Version 0.1.0 works with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.2 and older. 
 
 ## Links
 See [original documentation](https://github.com/dangrossman/bootstrap-daterangepicker).
