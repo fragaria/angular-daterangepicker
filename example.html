@@ -48,7 +48,7 @@
 <script>
     exampleApp = angular.module('example', ['daterangepicker'])
     exampleApp.controller('TestCtrl', function ($scope, $interval) {
-        $scope.date = {startDate: null, endDate: null};
+        $scope.date = {startDate: moment().subtract("days", 1), endDate: moment()};
         $scope.opts = {locale: {
             applyClass: 'btn-green',
             applyLabel: "Použít",
@@ -71,7 +71,7 @@
         //Watch for date changes
         $scope.$watch('date', function (newDate) {
             console.log('New date set: ', newDate);
-        }, true);
+        }, false);
 
     });
 
