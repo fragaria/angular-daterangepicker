@@ -12,7 +12,7 @@ module.exports = (grunt) ->
                     'js/angular-daterangepicker.js': ['coffee/angular-daterangepicker.coffee']
 
         watch:
-            files: ['index.html', 'coffee/*.coffee']
+            files: ['example.html', 'coffee/*.coffee']
             tasks: ['coffee']
 
         uglify:
@@ -21,11 +21,17 @@ module.exports = (grunt) ->
             target:
                 files:
                     'js/angular-daterangepicker.min.js': ['js/angular-daterangepicker.js']
+        wiredep:
+            target:
+                src: [
+                    './example.html'
+                ]
 
 
     grunt.loadNpmTasks("grunt-contrib-coffee")
     grunt.loadNpmTasks("grunt-contrib-watch")
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-uglify')
+    grunt.loadNpmTasks('grunt-wiredep')
 
     # Default task(s).
     grunt.registerTask "default", ["coffee"]
