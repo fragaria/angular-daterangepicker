@@ -1,6 +1,6 @@
 {
   "name": "angular-daterangepicker",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/fragaria/angular-daterangepicker",
   "main": "js/angular-daterangepicker.min.js",
   "authors": [
