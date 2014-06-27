@@ -103,6 +103,17 @@
             return el.data('daterangepicker');
           };
           _init();
+          el.on('apply.daterangepicker', function(ev, picker) {
+            return $timeout(function() {
+              return $scope.$apply(function() {
+                modelCtrl.$setViewValue({
+                  startDate: picker.startDate.toDate(),
+                  endDate: picker.endDate.toDate()
+                });
+                return modelCtrl.$render();
+              });
+            });
+          });
           el.change(function() {
             if ($.trim(el.val()) === '') {
               return $timeout(function() {

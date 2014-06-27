@@ -99,6 +99,16 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
 
         _init()
 
+        el.on('apply.daterangepicker', (ev, picker) ->
+            $timeout(-> $scope.$apply(->
+                modelCtrl.$setViewValue(
+                    startDate: picker.startDate.toDate()
+                    endDate: picker.endDate.toDate()
+                )
+                modelCtrl.$render()
+            ))
+        )
+
         # If input is cleared manually, set dates to null.
         el.change(() ->
             if $.trim(el.val()) == ''
