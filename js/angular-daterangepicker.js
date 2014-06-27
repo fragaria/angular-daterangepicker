@@ -87,17 +87,7 @@
             return el.val(_formatted(modelCtrl.$viewValue));
           };
           _init = function() {
-            return el.daterangepicker(opts, function(start, end, label) {
-              return $timeout(function() {
-                return $scope.$apply(function() {
-                  modelCtrl.$setViewValue({
-                    startDate: start.toDate(),
-                    endDate: end.toDate()
-                  });
-                  return modelCtrl.$render();
-                });
-              });
-            });
+            return el.daterangepicker(opts);
           };
           _getPicker = function() {
             return el.data('daterangepicker');
