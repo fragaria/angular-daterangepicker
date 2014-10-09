@@ -49,7 +49,7 @@
             modelCtrl.$setValidity('max', valid);
             return valid;
           };
-          modelCtrl.$formatters.unshift(function(val) {
+          modelCtrl.$formatters.push(function(val) {
             if (val && val.startDate && val.endDate) {
               picker = _getPicker();
               picker.setStartDate(val.startDate);
@@ -58,7 +58,7 @@
             }
             return '';
           });
-          modelCtrl.$parsers.unshift(function(val) {
+          modelCtrl.$parsers.push(function(val) {
             if (!angular.isObject(val) || !(val.hasOwnProperty('startDate') && val.hasOwnProperty('endDate'))) {
               return modelCtrl.$modelValue;
             }
