@@ -14,10 +14,10 @@
 
 <body>
     <!-- bower:js -->
-    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/jquery/dist/jquery.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="lib/momentjs/moment.js"></script>
+    <script src="lib/moment/moment.js"></script>
     <script src="lib/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- endbower -->
 
@@ -34,7 +34,6 @@
                     <input date-range-picker id="daterange1" class="form-control date-picker" type="text"
                            name="date" ng-model="date" required/>
                 </div>
-                Date set: {{date}}
                 <div class="form-group">
                     <label for="daterange2" class="control-label">Picker with min and max date</label>
                     <input date-range-picker id="daterange2" class="form-control date-picker" type="text"
@@ -46,7 +45,25 @@
                     <input date-range-picker id="daterange3" class="form-control date-picker" type="text"
                            name="date" ng-model="date" options="opts" required/>
                 </div>
+
+                <div class="form-group">
+                    <label for="daterange4" class="control-label">Picker with custom format</label>
+                    <div class="input-group col-md-6" id="daterange4">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        <input date-range-picker class="form-control date-picker" type="text"
+                           name="date2" ng-model="date2" options="{format: 'MMMM D, YYYY'}" required/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-chevron-down"></span></span>
+                    </div>
+                </div>
             </form>
+
+            <div class="row">
+                <h4>Dates:</h4>
+                <div class="col-md-12 well">
+                    {{date}}<br>
+                    {{date2}}<br>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -54,10 +71,19 @@
 
 
 <script>
-    exampleApp = angular.module('example', ['daterangepicker'])
-    exampleApp.controller('TestCtrl', function ($scope, $interval) {
-        $scope.date = {startDate: moment().subtract("days", 1), endDate: moment()};
-        $scope.opts = {locale: {
+exampleApp = angular.module('example', ['daterangepicker']);
+exampleApp.controller('TestCtrl', function($scope, $interval) {
+    $scope.date = {
+        startDate: moment().subtract("days", 1),
+        endDate: moment()
+    };
+    $scope.date2 = {
+        startDate: moment().subtract("days", 1),
+        endDate: moment()
+    };
+
+    $scope.opts = {
+        locale: {
             applyClass: 'btn-green',
             applyLabel: "Použít",
             fromLabel: "Od",
@@ -66,24 +92,24 @@
             customRangeLabel: 'Vlastní rozsah',
             daysOfWeek: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
             firstDay: 1,
-            monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
+            monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září',
+                'Říjen', 'Listopad', 'Prosinec'
+            ]
 
         },
         ranges: {
-      'Last 7 Days': [moment().subtract('days', 6), moment()],
-      'Last 30 Days': [moment().subtract('days', 29), moment()]
-    }
-      };
+            'Last 7 Days': [moment().subtract('days', 6), moment()],
+            'Last 30 Days': [moment().subtract('days', 29), moment()]
+        }
+    };
 
+    //Watch for date changes
+    $scope.$watch('date', function(newDate) {
+        console.log('New date set: ', newDate);
+    }, false);
 
-        //Watch for date changes
-        $scope.$watch('date', function (newDate) {
-            console.log('New date set: ', newDate);
-        }, false);
+});
 
-    });
-
-    angular.bootstrap(document, ['example'])
-</script>
+angular.bootstrap(document, ['example']);</script>
 
 </html>
