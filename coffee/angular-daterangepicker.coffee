@@ -39,7 +39,7 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
             modelCtrl.$setValidity('max', valid)
             return valid
 
-        modelCtrl.$formatters.unshift((val) ->
+        modelCtrl.$formatters.push((val) ->
             if val and val.startDate and val.endDate
                 # Update datepicker dates according to val before rendering.
                 picker = _getPicker()
@@ -49,7 +49,7 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
             return ''
         )
 
-        modelCtrl.$parsers.unshift((val) ->
+        modelCtrl.$parsers.push((val) ->
             # Check if input is valid.
             if not angular.isObject(val) or not (val.hasOwnProperty('startDate') and val.hasOwnProperty('endDate'))
                 return modelCtrl.$modelValue
