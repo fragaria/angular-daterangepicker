@@ -5,7 +5,7 @@ picker.value('dateRangePickerConfig',
     format: 'YYYY-MM-DD'
 )
 
-picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', ($compile, $timeout, $parse, defaults) ->
+picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
     require: 'ngModel'
     restrict: 'A'
     scope:
@@ -15,7 +15,7 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
     link: ($scope, element, attrs, modelCtrl) ->
         el = $(element)
         customOpts = $parse(attrs.dateRangePicker)($scope, {})
-        opts = angular.extend(defaults, customOpts)
+        opts = angular.extend(dateRangePickerConfig, customOpts)
 
         _formatted = (viewVal) ->
             f = (date) ->
@@ -140,4 +140,4 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
                 opts = angular.extend(opts, newOpts)
                 _init()
             )
-])
+)

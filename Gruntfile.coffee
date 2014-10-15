@@ -1,4 +1,5 @@
 module.exports = (grunt) ->
+    require('load-grunt-tasks')(grunt)
 
     # Project configuration.
     grunt.initConfig
@@ -27,13 +28,16 @@ module.exports = (grunt) ->
                     './example.html'
                 ]
 
+        ngAnnotate:
+            options:
+                singleQuotes: true
 
-    grunt.loadNpmTasks("grunt-contrib-coffee")
-    grunt.loadNpmTasks("grunt-contrib-watch")
-    grunt.loadNpmTasks('grunt-contrib-uglify')
-    grunt.loadNpmTasks('grunt-wiredep')
+            daterangepicker:
+                files:
+                    'js/angular-daterangepicker.js': ['js/angular-daterangepicker.js']
+
 
     # Default task(s).
     grunt.registerTask "default", ["coffee"]
     grunt.registerTask "develop", ["coffee", "watch"]
-    grunt.registerTask "dist", ["coffee", "uglify"]
+    grunt.registerTask "dist", ["coffee", "ngAnnotate", "uglify"]
