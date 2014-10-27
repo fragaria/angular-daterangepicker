@@ -78,13 +78,13 @@
             return !val || (val.startDate === null || val.endDate === null);
           };
           modelCtrl.$render = function() {
-            if (!modelCtrl.$viewValue) {
+            if (!modelCtrl.$modelValue) {
               return el.val('');
             }
-            if (modelCtrl.$viewValue.startDate === null) {
+            if (modelCtrl.$modelValue.startDate === null) {
               return el.val('');
             }
-            return el.val(_formatted(modelCtrl.$viewValue));
+            return el.val(_formatted(modelCtrl.$modelValue));
           };
           _init = function() {
             return el.daterangepicker(opts, function(start, end, label) {
@@ -118,8 +118,8 @@
           if (attrs.min) {
             $scope.$watch('dateMin', function(date) {
               if (date) {
-                if (!modelCtrl.$isEmpty(modelCtrl.$viewValue)) {
-                  _validateMin(date, modelCtrl.$viewValue.startDate);
+                if (!modelCtrl.$isEmpty(modelCtrl.$modelValue)) {
+                  _validateMin(date, modelCtrl.$modelValue.startDate);
                 }
                 opts['minDate'] = moment(date);
               } else {
@@ -131,8 +131,8 @@
           if (attrs.max) {
             $scope.$watch('dateMax', function(date) {
               if (date) {
-                if (!modelCtrl.$isEmpty(modelCtrl.$viewValue)) {
-                  _validateMax(date, modelCtrl.$viewValue.endDate);
+                if (!modelCtrl.$isEmpty(modelCtrl.$modelValue)) {
+                  _validateMax(date, modelCtrl.$modelValue.endDate);
                 }
                 opts['maxDate'] = moment(date);
               } else {
