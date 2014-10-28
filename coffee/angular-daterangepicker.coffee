@@ -14,7 +14,7 @@ picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRang
         opts: '=options'
     link: ($scope, element, attrs, modelCtrl) ->
         el = $(element)
-        customOpts = $parse(attrs.dateRangePicker)($scope, {})
+        customOpts = $scope.opts
         opts = angular.extend(defaults, customOpts)
 
         _formatted = (viewVal) ->
