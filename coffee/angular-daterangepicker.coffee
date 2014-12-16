@@ -73,13 +73,13 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
             not val or (val.startDate == null or val.endDate == null)
 
         modelCtrl.$render = ->
-            if not modelCtrl.$viewValue
+            if not modelCtrl.$modelValue
                 return el.val('')
 
-            if modelCtrl.$viewValue.startDate == null
+            if modelCtrl.$modelValue.startDate == null
                 return el.val('')
 
-            return el.val(_formatted(modelCtrl.$viewValue))
+            return el.val(_formatted(modelCtrl.$modelValue))
 
 
         _init = ->
@@ -113,8 +113,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         if attrs.min
             $scope.$watch('dateMin', (date) ->
                 if date
-                    if not modelCtrl.$isEmpty(modelCtrl.$viewValue)
-                        _validateMin(date, modelCtrl.$viewValue.startDate)
+                    if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
+                        _validateMin(date, modelCtrl.$modelValue.startDate)
 
                     opts['minDate'] = moment(date)
                 else
@@ -125,8 +125,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         if attrs.max
             $scope.$watch('dateMax', (date) ->
                 if date
-                    if not modelCtrl.$isEmpty(modelCtrl.$viewValue)
-                        _validateMax(date, modelCtrl.$viewValue.endDate)
+                    if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
+                        _validateMax(date, modelCtrl.$modelValue.endDate)
 
                     opts['maxDate'] = moment(date)
                 else
