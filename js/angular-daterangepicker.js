@@ -8,7 +8,7 @@
     format: 'YYYY-MM-DD'
   });
 
-  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -30,7 +30,11 @@
             }
             return date.format(opts.format);
           };
-          return [f(viewVal.startDate), f(viewVal.endDate)].join(opts.separator);
+          if (opts.singleDatePicker) {
+            return f(viewVal.startDate);
+          } else {
+            return [f(viewVal.startDate), f(viewVal.endDate)].join(opts.separator);
+          }
         };
         _validateMin = function(min, start) {
           var valid;
@@ -148,6 +152,6 @@
         }
       }
     };
-  }]);
+  });
 
 }).call(this);
