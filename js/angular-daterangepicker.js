@@ -8,7 +8,7 @@
     format: 'YYYY-MM-DD'
   });
 
-  picker.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -21,7 +21,7 @@
         var customOpts, el, opts, _formatted, _getPicker, _init, _validateMax, _validateMin;
         el = $(element);
         customOpts = $parse(attrs.dateRangePicker)($scope, {});
-        opts = angular.extend(dateRangePickerConfig, customOpts);
+        opts = angular.extend({}, dateRangePickerConfig, customOpts);
         _formatted = function(viewVal) {
           var f;
           f = function(date) {
@@ -145,13 +145,16 @@
           });
         }
         if (attrs.options) {
-          return $scope.$watch('opts', function(newOpts) {
+          $scope.$watch('opts', function(newOpts) {
             opts = angular.extend(opts, newOpts);
             return _init();
           });
         }
+        return $scope.$on('$destroy', function() {
+          return el.data('daterangepicker').remove();
+        });
       }
     };
-  });
+  }]);
 
 }).call(this);
