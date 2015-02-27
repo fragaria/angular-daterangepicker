@@ -16,6 +16,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         el = $(element)
         customOpts = $parse(attrs.dateRangePicker)($scope, {})
         opts = angular.extend({}, dateRangePickerConfig, customOpts)
+        _picker = null
 
         _formatted = (viewVal) ->
             f = (date) ->
@@ -45,9 +46,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         modelCtrl.$formatters.push((val) ->
             if val and val.startDate and val.endDate
                 # Update datepicker dates according to val before rendering.
-                picker = _getPicker()
-                picker.setStartDate(val.startDate)
-                picker.setEndDate(val.endDate)
+                _picker.setStartDate(val.startDate)
+                _picker.setEndDate(val.endDate)
                 return val
             return ''
         )
@@ -96,8 +96,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
                       modelCtrl.$render()
                   ))
             )
-        _getPicker = ->
-            el.data('daterangepicker')
+            _picker = el.data('daterangepicker')
+            el
 
         _init()
 
@@ -145,5 +145,5 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
             )
 
         $scope.$on '$destroy', ->
-            el.data('daterangepicker').remove()
+            _picker.remove()
 )

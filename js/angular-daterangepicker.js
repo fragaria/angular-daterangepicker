@@ -18,10 +18,11 @@
         opts: '=options'
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _formatted, _getPicker, _init, _validateMax, _validateMin;
+        var customOpts, el, opts, _formatted, _init, _picker, _validateMax, _validateMin;
         el = $(element);
         customOpts = $parse(attrs.dateRangePicker)($scope, {});
         opts = angular.extend({}, dateRangePickerConfig, customOpts);
+        _picker = null;
         _formatted = function(viewVal) {
           var f;
           f = function(date) {
@@ -54,9 +55,8 @@
         };
         modelCtrl.$formatters.push(function(val) {
           if (val && val.startDate && val.endDate) {
-            picker = _getPicker();
-            picker.setStartDate(val.startDate);
-            picker.setEndDate(val.endDate);
+            _picker.setStartDate(val.startDate);
+            _picker.setEndDate(val.endDate);
             return val;
           }
           return '';
@@ -90,7 +90,7 @@
           return el.val(_formatted(modelCtrl.$modelValue));
         };
         _init = function() {
-          return el.daterangepicker(opts, function(start, end, label) {
+          el.daterangepicker(opts, function(start, end, label) {
             return $timeout(function() {
               return $scope.$apply(function() {
                 modelCtrl.$setViewValue({
@@ -101,9 +101,8 @@
               });
             });
           });
-        };
-        _getPicker = function() {
-          return el.data('daterangepicker');
+          _picker = el.data('daterangepicker');
+          return el;
         };
         _init();
         el.change(function() {
@@ -151,7 +150,7 @@
           });
         }
         return $scope.$on('$destroy', function() {
-          return el.data('daterangepicker').remove();
+          return _picker.remove();
         });
       }
     };
