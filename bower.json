@@ -9,7 +9,7 @@
     "Lukáš Marek <lukas.marek@fragaria.cz>"
   ],
   "description": "Angular.js wrapper for Dan Grosmann's bootstrap date range picker (https://github.com/dangrossman/bootstrap-daterangepicker).",
-  "license": "Apache",
+  "license": "MIT",
   "private": false,
   "ignore": [
     "**/.*",
