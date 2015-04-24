@@ -94,8 +94,8 @@
             return $timeout(function() {
               return $scope.$apply(function() {
                 modelCtrl.$setViewValue({
-                  startDate: start.toDate(),
-                  endDate: end.toDate()
+                  startDate: start,
+                  endDate: end
                 });
                 return modelCtrl.$render();
               });
