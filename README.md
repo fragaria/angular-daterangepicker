@@ -5,7 +5,7 @@ Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.c
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
 
-## Instalation via Bower
+## Installation via Bower
 The easiest way to install the picker is:
 ```
 bower install angular-daterangepicker --save
