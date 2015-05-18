@@ -15,14 +15,42 @@
       scope: {
         dateMin: '=min',
         dateMax: '=max',
+        model: '=ngModel',
         opts: '=options'
       },
       link: function($scope, element, attrs, modelCtrl) {
         var customOpts, el, opts, _formatted, _init, _picker, _validateMax, _validateMin;
         el = $(element);
-        customOpts = $parse(attrs.dateRangePicker)($scope, {});
+        customOpts = $scope.opts;
         opts = angular.extend({}, dateRangePickerConfig, customOpts);
         _picker = null;
+
+        var setStartDate = function(newValue) {
+          $timeout(function() {
+            var m = moment(newValue);
+            if (_picker.endDate < m)
+              _picker.setEndDate(m);
+            _picker.setStartDate(m);
+          });
+        };
+
+        var setEndDate = function(newValue) {
+          $timeout(function() {
+            var m = moment(newValue);
+            if (_picker.startDate > m)
+              _picker.setStartDate(m);
+            _picker.setEndDate(m);
+          });
+        };
+
+        //Watchers enable resetting of start and end dates
+        $scope.$watch('model.startDate', function(newValue) {
+          setStartDate(newValue);
+        });
+        $scope.$watch('model.endDate', function(newValue) {
+          setEndDate(newValue);
+        });
+
         _formatted = function(viewVal) {
           var f;
           f = function(date) {
@@ -55,13 +83,13 @@
         };
         modelCtrl.$formatters.push(function(val) {
           if (val && val.startDate && val.endDate) {
-            _picker.setStartDate(val.startDate);
-            _picker.setEndDate(val.endDate);
+            setStartDate(val.startDate);
+            setEndDate(val.endDate);
             return val;
           }
           return '';
         });
-        modelCtrl.$parsers.push(function(val) {
+        modelCtrl.$parsers.unshift(function(val) {
           if (!angular.isObject(val) || !(val.hasOwnProperty('startDate') && val.hasOwnProperty('endDate'))) {
             return modelCtrl.$modelValue;
           }
@@ -92,13 +120,11 @@
         _init = function() {
           el.daterangepicker(opts, function(start, end, label) {
             return $timeout(function() {
-              return $scope.$apply(function() {
-                modelCtrl.$setViewValue({
-                  startDate: start.toDate(),
-                  endDate: end.toDate()
-                });
-                return modelCtrl.$render();
+              modelCtrl.$setViewValue({
+                startDate: start,
+                endDate: end
               });
+              return modelCtrl.$render();
             });
           });
           _picker = el.data('daterangepicker');
@@ -108,11 +134,9 @@
         el.change(function() {
           if ($.trim(el.val()) === '') {
             return $timeout(function() {
-              return $scope.$apply(function() {
-                return modelCtrl.$setViewValue({
-                  startDate: null,
-                  endDate: null
-                });
+              return modelCtrl.$setViewValue({
+                startDate: null,
+                endDate: null
               });
             });
           }
