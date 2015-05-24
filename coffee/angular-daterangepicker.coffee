@@ -11,12 +11,34 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
   scope:
     dateMin: '=min'
     dateMax: '=max'
+    model: '=ngModel'
     opts: '=options'
   link: ($scope, element, attrs, modelCtrl) ->
     el = $(element)
-    customOpts = $parse(attrs.dateRangePicker)($scope, {})
+    customOpts = $scope.opts
     opts = angular.extend({}, dateRangePickerConfig, customOpts)
     _picker = null
+
+    _setStartDate = (newValue) ->
+      $timeout () ->
+        m = moment(newValue)
+        if (_picker.endDate < m)
+          _picker.setEndDate(m)
+        _picker.setStartDate(m)
+
+    _setEndDate = (newValue) ->
+      $timeout () ->
+        m = moment(newValue)
+        if (_picker.startDate > m)
+          _picker.setStartDate(m)
+        _picker.setEndDate(m)
+
+    #Watchers enable resetting of start and end dates
+    $scope.$watch 'model.startDate', (newValue) –>
+      _setStartDate(newValue)
+
+    $scope.$watch 'model.endDate', (newValue) ->
+      _setEndDate(newValue)
 
     _formatted = (viewVal) ->
       f = (date) ->
@@ -46,8 +68,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     modelCtrl.$formatters.push((val) ->
       if val and val.startDate and val.endDate
         # Update datepicker dates according to val before rendering.
-        _picker.setStartDate(val.startDate)
-        _picker.setEndDate(val.endDate)
+        _setStartDate(val.startDate)
+        _setEndDate(val.endDate)
         return val
       return ''
     )
@@ -84,34 +106,25 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       return el.val(_formatted(modelCtrl.$modelValue))
 
+    _init = () ->
+      el.daterangepicker opts, (start, end, label) ->
+        $timeout(()->
+          modelCtrl.$setViewValue({startDate: start, endDate: end})
+        )
+        modelCtrl.$render()
 
-    _init = ->
-      el.daterangepicker(opts, (start, end, label) ->
-        $timeout(->
-          $scope.$apply(->
-            modelCtrl.$setViewValue({
-              startDate: start
-              endDate: end
-            })
-            modelCtrl.$render()
-          ))
-      )
-      _picker = el.data('daterangepicker')
-      el
+    _picker = el.data('daterangepicker')
 
     _init()
 
     # If input is cleared manually, set dates to null.
-    el.change(() ->
+    el.change () ->
       if $.trim(el.val()) == ''
-        $timeout(->
-          $scope.$apply(->
-            modelCtrl.$setViewValue(
-              startDate: null
-              endDate: null
-            )
-          ))
-    )
+        $timeout ()->
+          modelCtrl.$setViewValue(
+            startDate: null
+            endDate: null
+          )
 
     if attrs.min
       $scope.$watch('dateMin', (date) ->
