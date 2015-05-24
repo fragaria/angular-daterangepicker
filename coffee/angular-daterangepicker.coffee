@@ -90,8 +90,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         $timeout(->
           $scope.$apply(->
             modelCtrl.$setViewValue({
-              startDate: start.toDate()
-              endDate: end.toDate()
+              startDate: start
+              endDate: end
             })
             modelCtrl.$render()
           ))
