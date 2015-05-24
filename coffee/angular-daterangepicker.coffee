@@ -147,7 +147,6 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           opts['maxDate'] = moment(date)
         else
           opts['maxDate'] = false
-
         _init()
       )
 
