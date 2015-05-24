@@ -92,6 +92,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
                       modelCtrl.$setViewValue({
                           startDate: start.toDate()
                           endDate: end.toDate()
+                          label: label
                       })
                       modelCtrl.$render()
                   ))

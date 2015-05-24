@@ -95,7 +95,8 @@
               return $scope.$apply(function() {
                 modelCtrl.$setViewValue({
                   startDate: start.toDate(),
-                  endDate: end.toDate()
+                  endDate: end.toDate(),
+                  label: label
                 });
                 return modelCtrl.$render();
               });
