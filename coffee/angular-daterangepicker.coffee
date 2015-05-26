@@ -21,17 +21,19 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     _setStartDate = (newValue) ->
       $timeout () ->
-        m = moment(newValue)
-        if (_picker.endDate < m)
-          _picker.setEndDate(m)
-        _picker.setStartDate(m)
+        if (_picker)
+          m = moment(newValue)
+          if (_picker.endDate < m)
+            _picker.setEndDate(m)
+          _picker.setStartDate(m)
 
     _setEndDate = (newValue) ->
       $timeout () ->
-        m = moment(newValue)
-        if (_picker.startDate > m)
-          _picker.setStartDate(m)
-        _picker.setEndDate(m)
+        if (_picker)
+          m = moment(newValue)
+          if (_picker.startDate > m)
+            _picker.setStartDate(m)
+          _picker.setEndDate(m)
 
     #Watchers enable resetting of start and end dates
     $scope.$watch 'model.startDate', (newValue) ->
@@ -112,8 +114,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
-
-    _picker = el.data('daterangepicker')
+        _picker = el.data('daterangepicker')
 
     _init()
 
