@@ -27,21 +27,25 @@
         _setStartDate = function(newValue) {
           return $timeout(function() {
             var m;
-            m = moment(newValue);
-            if (_picker.endDate < m) {
-              _picker.setEndDate(m);
+            if (_picker) {
+              m = moment(newValue);
+              if (_picker.endDate < m) {
+                _picker.setEndDate(m);
+              }
+              return _picker.setStartDate(m);
             }
-            return _picker.setStartDate(m);
           });
         };
         _setEndDate = function(newValue) {
           return $timeout(function() {
             var m;
-            m = moment(newValue);
-            if (_picker.startDate > m) {
-              _picker.setStartDate(m);
+            if (_picker) {
+              m = moment(newValue);
+              if (_picker.startDate > m) {
+                _picker.setStartDate(m);
+              }
+              return _picker.setEndDate(m);
             }
-            return _picker.setEndDate(m);
           });
         };
         $scope.$watch('model.startDate', function(newValue) {
@@ -124,10 +128,10 @@
                 endDate: end
               });
             });
-            return modelCtrl.$render();
+            modelCtrl.$render();
+            return _picker = el.data('daterangepicker');
           });
         };
-        _picker = el.data('daterangepicker');
         _init();
         el.change(function() {
           if ($.trim(el.val()) === '') {
