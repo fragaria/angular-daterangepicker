@@ -90,6 +90,7 @@
           return el.val(_formatted(modelCtrl.$modelValue));
         };
         _init = function() {
+          _picker = el.data('daterangepicker');
           el.daterangepicker(opts, function(start, end, label) {
             return $timeout(function() {
               return $scope.$apply(function() {
@@ -101,7 +102,6 @@
               });
             });
           });
-          _picker = el.data('daterangepicker');
           return el;
         };
         _init();

@@ -86,6 +86,8 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
 
         _init = ->
+            _picker = el.data('daterangepicker')
+
             el.daterangepicker(opts, (start, end, label) ->
                 $timeout(->
                   $scope.$apply(->
@@ -96,7 +98,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
                       modelCtrl.$render()
                   ))
             )
-            _picker = el.data('daterangepicker')
+            
             el
 
         _init()
