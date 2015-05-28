@@ -109,13 +109,14 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       return el.val(_formatted(modelCtrl.$modelValue))
 
     _init = () ->
+      _picker = el.data('daterangepicker')
+
       el.daterangepicker opts, (start, end, label) ->
         $timeout(()->
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
-        _picker = el.data('daterangepicker')
-
+        
     _init()
 
     # If input is cleared manually, set dates to null.

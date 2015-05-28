@@ -121,6 +121,7 @@
           return el.val(_formatted(modelCtrl.$modelValue));
         };
         _init = function() {
+          _picker = el.data('daterangepicker');
           return el.daterangepicker(opts, function(start, end, label) {
             $timeout(function() {
               return modelCtrl.$setViewValue({
@@ -128,8 +129,7 @@
                 endDate: end
               });
             });
-            modelCtrl.$render();
-            return _picker = el.data('daterangepicker');
+            return modelCtrl.$render();
           });
         };
         _init();
