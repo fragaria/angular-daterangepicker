@@ -116,7 +116,10 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
-        
+
+      for eventType, callbackFunction of opts.eventHandlers
+        el.on eventType, callbackFunction
+
     _init()
 
     # If input is cleared manually, set dates to null.
