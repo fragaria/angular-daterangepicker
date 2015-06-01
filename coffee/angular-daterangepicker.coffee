@@ -159,5 +159,5 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       )
 
     $scope.$on '$destroy', ->
-      _picker.remove()
+      _picker?.remove()
 )
