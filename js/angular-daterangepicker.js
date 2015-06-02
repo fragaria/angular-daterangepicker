@@ -16,23 +16,39 @@
         dateMin: '=min',
         dateMax: '=max',
         model: '=ngModel',
-        opts: '=options'
+        opts: '=options',
+        clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
         var customOpts, el, opts, _formatted, _init, _picker, _setEndDate, _setStartDate, _validateMax, _validateMin;
         el = $(element);
         customOpts = $scope.opts;
         opts = angular.extend({}, dateRangePickerConfig, customOpts);
+        if ($scope.clearable) {
+          $timeout(function () {
+            el.on('cancel.daterangepicker', function(ev, picker) {
+              el.val('');
+              el.trigger('change');
+            });
+          });
+          opts = angular.extend(opts, { locale: { cancelLabel: 'Clear' } });
+        }
         _picker = null;
         _setStartDate = function(newValue) {
           return $timeout(function() {
             var m;
             if (_picker) {
-              m = moment(newValue);
-              if (_picker.endDate < m) {
-                _picker.setEndDate(m);
+              if (newValue === null) {
+                _picker.setStartDate();
+                _picker.setEndDate();
+                el.val('');
+              } else {
+                m = moment(newValue);
+                if (_picker.endDate < m) {
+                  _picker.setEndDate(m);
+                }
+                return _picker.setStartDate(m);
               }
-              return _picker.setStartDate(m);
             }
           });
         };
@@ -40,11 +56,17 @@
           return $timeout(function() {
             var m;
             if (_picker) {
-              m = moment(newValue);
-              if (_picker.startDate > m) {
-                _picker.setStartDate(m);
+              if (newValue === null) {
+                _picker.setStartDate();
+                _picker.setEndDate();
+                el.val('');
+              } else {
+                m = moment(newValue);
+                if (_picker.startDate > m) {
+                  _picker.setStartDate(m);
+                }
+                return _picker.setEndDate(m);
               }
-              return _picker.setEndDate(m);
             }
           });
         };
