@@ -30,12 +30,6 @@
               el.val('');
               el.trigger('change');
             });
-            el.on('apply.daterangepicker', function(ev, picker) {
-              return modelCtrl.$setViewValue({
-                startDate: _picker.startDate,
-                endDate: _picker.endDate
-              });
-            });
           });
           opts = angular.extend(opts, { locale: { cancelLabel: 'Clear' } });
         }
@@ -150,15 +144,17 @@
         };
         _init = function() {
           _picker = el.data('daterangepicker');
-          return el.daterangepicker(opts, function(start, end, label) {
+          var res = el.daterangepicker(opts);
+          el.on('apply.daterangepicker', function(ev, picker) {
             $timeout(function() {
               return modelCtrl.$setViewValue({
-                startDate: start,
-                endDate: end
+                startDate: picker.startDate,
+                endDate: picker.endDate
               });
             });
             return modelCtrl.$render();
           });
+          return res;
         };
         _init();
         el.change(function() {
