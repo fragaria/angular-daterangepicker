@@ -30,6 +30,12 @@
               el.val('');
               el.trigger('change');
             });
+            el.on('apply.daterangepicker', function(ev, picker) {
+              return modelCtrl.$setViewValue({
+                startDate: _picker.startDate,
+                endDate: _picker.endDate
+              });
+            });
           });
           opts = angular.extend(opts, { locale: { cancelLabel: 'Clear' } });
         }
