@@ -1,6 +1,6 @@
 picker = angular.module('daterangepicker', [])
 
-picker.value('dateRangePickerConfig',
+picker.constant('dateRangePickerConfig',
   separator: ' - '
   format: 'YYYY-MM-DD'
 )
@@ -116,7 +116,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
-        
+
     _init()
 
     # If input is cleared manually, set dates to null.
@@ -159,5 +159,6 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       )
 
     $scope.$on '$destroy', ->
-      _picker.remove()
+      if(_picker)
+        _picker.remove()
 )
