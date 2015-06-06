@@ -3,7 +3,7 @@
 
   picker = angular.module('daterangepicker', []);
 
-  picker.value('dateRangePickerConfig', {
+  picker.constant('dateRangePickerConfig', {
     separator: ' - ',
     format: 'YYYY-MM-DD'
   });
@@ -176,7 +176,9 @@
           });
         }
         return $scope.$on('$destroy', function() {
-          return _picker.remove();
+          if (_picker) {
+            return _picker.remove();
+          }
         });
       }
     };
