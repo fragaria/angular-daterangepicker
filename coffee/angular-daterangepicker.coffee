@@ -114,8 +114,12 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
-        _picker = el.data('daterangepicker')
 
+      # Needs to be after daterangerpicker has been created, otherwise
+      # watchers that reinit will be attached to old daterangepicker instance.
+      _picker = el.data('daterangepicker')
+      return
+        
     _init()
 
     # If input is cleared manually, set dates to null.
@@ -158,5 +162,5 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       )
 
     $scope.$on '$destroy', ->
-      _picker.remove()
+      _picker?.remove()
 )
