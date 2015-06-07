@@ -3,7 +3,7 @@
 
   picker = angular.module('daterangepicker', []);
 
-  picker.value('dateRangePickerConfig', {
+  picker.constant('dateRangePickerConfig', {
     separator: ' - ',
     format: 'YYYY-MM-DD'
   });
@@ -121,6 +121,7 @@
           return el.val(_formatted(modelCtrl.$modelValue));
         };
         _init = function() {
+          var callbackFunction, eventType, _ref;
           el.daterangepicker(opts, function(start, end, label) {
             $timeout(function() {
               return modelCtrl.$setViewValue({
@@ -131,6 +132,11 @@
             return modelCtrl.$render();
           });
           _picker = el.data('daterangepicker');
+          _ref = opts.eventHandlers;
+          for (eventType in _ref) {
+            callbackFunction = _ref[eventType];
+            el.on(eventType, callbackFunction);
+          }
         };
         _init();
         el.change(function() {
@@ -176,7 +182,7 @@
           });
         }
         return $scope.$on('$destroy', function() {
-          return _picker.remove();
+          return _picker != null ? _picker.remove() : void 0;
         });
       }
     };
