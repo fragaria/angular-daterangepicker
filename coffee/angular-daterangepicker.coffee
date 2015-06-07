@@ -115,9 +115,14 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         )
         modelCtrl.$render()
 
+
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
       _picker = el.data('daterangepicker')
+
+      #Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
+      for eventType, callbackFunction of opts.eventHandlers
+        el.on eventType, callbackFunction
       return
 
     _init()
