@@ -34,7 +34,7 @@ Declare dependency:
 App = angular.module('app', ['daterangepicker']);
 ```
 
-Prepare model in your controller. The model **must** have `startDate` and `endDate` attributes: 
+Prepare model in your controller. The model **must** have `startDate` and `endDate` attributes:
 
 ```
 exampleApp.controller('TestCtrl', function ($scope) {
@@ -62,14 +62,19 @@ Min and max value can be set via additional attributes:
 
 The date picker can be later customized by passing `options` attribute.
 
-<input date-range-picker class="form-control date-picker" type="text" ng-model="date" 
+```
+<input date-range-picker class="form-control date-picker" type="text" ng-model="date"
 min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
+```
 
 ## Compatibility
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
 
-Version 0.1.0 works with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.2 and older. 
+Version 0.1.0 works with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.2 and older.
 
 ## Links
 See [original documentation](https://github.com/dangrossman/bootstrap-daterangepicker).
 
+## Issues and Pull Requests
+The PRs are more than welcome – thank you for those.
+Please send PRs only for `*.coffee` code, as Javascript and minified Javascript are generated.
