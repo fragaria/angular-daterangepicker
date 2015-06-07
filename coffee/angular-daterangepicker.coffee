@@ -109,13 +109,16 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       return el.val(_formatted(modelCtrl.$modelValue))
 
     _init = () ->
-      _picker = el.data('daterangepicker')
-
       el.daterangepicker opts, (start, end, label) ->
         $timeout(()->
           modelCtrl.$setViewValue({startDate: start, endDate: end})
         )
         modelCtrl.$render()
+
+      # Needs to be after daterangerpicker has been created, otherwise
+      # watchers that reinit will be attached to old daterangepicker instance.
+      _picker = el.data('daterangepicker')
+      return
         
     _init()
 
