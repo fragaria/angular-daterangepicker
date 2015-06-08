@@ -76,17 +76,17 @@ options="{eventHandlers: {'show.daterangepicker': function(ev, picker) { ... }}}
 
 All event handlers from the Bootstrap daterangepicker are supported. For reference, the complete list is below:
 
-show.daterangepicker: Triggered when the picker is shown
+`show.daterangepicker`: Triggered when the picker is shown
 
-hide.daterangepicker: Triggered when the picker is hidden
+`hide.daterangepicker`: Triggered when the picker is hidden
 
-showCalendar.daterangepicker: Triggered when the calendar is shown
+`showCalendar.daterangepicker`: Triggered when the calendar is shown
 
-hideCalendar.daterangepicker: Triggered when the calendar is hidden
+`hideCalendar.daterangepicker`: Triggered when the calendar is hidden
 
-apply.daterangepicker: Triggered when the apply button is clicked
+`apply.daterangepicker`: Triggered when the apply button is clicked
 
-cancel.daterangepicker: Triggered when the cancel button is clicked
+`cancel.daterangepicker`: Triggered when the cancel button is clicked
 
 ## Compatibility
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
@@ -98,4 +98,6 @@ See [original documentation](https://github.com/dangrossman/bootstrap-daterangep
 
 ## Issues and Pull Requests
 The PRs are more than welcome – thank you for those.
-Please send PRs only for `*.coffee` code, as Javascript and minified Javascript are generated.
+
+Please send PRs only for `*.coffee` code. Javascript and minified Javascript should be generated with `grunt dist` command
+just before the commit.
