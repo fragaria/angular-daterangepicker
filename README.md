@@ -60,12 +60,33 @@ Min and max value can be set via additional attributes:
 <input date-range-picker class="form-control date-picker" type="text" ng-model="date" min="'2014-02-23'" max="'2015-02-25'"/>
 ```
 
-The date picker can be later customized by passing `options` attribute.
+The date picker can be further customized by passing in the `options` attribute.
 
 ```
 <input date-range-picker class="form-control date-picker" type="text" ng-model="date"
 min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
 ```
+
+Optionally, event handlers can be passed in through the `eventHandlers` attribute of `options`.
+
+```
+<input date-range-picker class="form-control date-picker" type="text" ng-model="date"
+options="{eventHandlers: {'show.daterangepicker': function(ev, picker) { ... }}}"/>
+```
+
+All event handlers from the Bootstrap daterangepicker are supported. For reference, the complete list is below:
+
+show.daterangepicker: Triggered when the picker is shown
+
+hide.daterangepicker: Triggered when the picker is hidden
+
+showCalendar.daterangepicker: Triggered when the calendar is shown
+
+hideCalendar.daterangepicker: Triggered when the calendar is hidden
+
+apply.daterangepicker: Triggered when the apply button is clicked
+
+cancel.daterangepicker: Triggered when the cancel button is clicked
 
 ## Compatibility
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
