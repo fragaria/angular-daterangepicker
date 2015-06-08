@@ -5,7 +5,7 @@ picker.constant('dateRangePickerConfig',
   format: 'YYYY-MM-DD'
 )
 
-picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
+picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
   require: 'ngModel'
   restrict: 'A'
   scope:
@@ -20,7 +20,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _picker = null
 
     _setStartDate = (newValue) ->
-      $timeout () ->
+      $timeout ->
         if (_picker)
           m = moment(newValue)
           if (_picker.endDate < m)
@@ -28,7 +28,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           _picker.setStartDate(m)
 
     _setEndDate = (newValue) ->
-      $timeout () ->
+      $timeout ->
         if (_picker)
           m = moment(newValue)
           if (_picker.startDate > m)
@@ -67,16 +67,15 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       modelCtrl.$setValidity('max', valid)
       return valid
 
-    modelCtrl.$formatters.push((val) ->
+    modelCtrl.$formatters.push (val) ->
       if val and val.startDate and val.endDate
         # Update datepicker dates according to val before rendering.
         _setStartDate(val.startDate)
         _setEndDate(val.endDate)
         return val
       return ''
-    )
 
-    modelCtrl.$parsers.push((val) ->
+    modelCtrl.$parsers.push (val) ->
       # Check if input is valid.
       if not angular.isObject(val) or not (val.hasOwnProperty('startDate') and val.hasOwnProperty('endDate'))
         return modelCtrl.$modelValue
@@ -93,11 +92,10 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         modelCtrl.$setValidity('max', true)
 
       return val
-    )
 
     modelCtrl.$isEmpty = (val) ->
       # modelCtrl is empty if val is invalid or any of the ranges are not set.
-      not val or (val.startDate == null or val.endDate == null)
+      not val or val.startDate == null or val.endDate == null
 
     modelCtrl.$render = ->
       if not modelCtrl.$modelValue
@@ -108,11 +106,10 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       return el.val(_formatted(modelCtrl.$modelValue))
 
-    _init = () ->
-      el.daterangepicker opts, (start, end, label) ->
-        $timeout(()->
+    _init = ->
+      el.daterangepicker opts, (start, end) ->
+        $timeout ->
           modelCtrl.$setViewValue({startDate: start, endDate: end})
-        )
         modelCtrl.$render()
 
 
@@ -128,7 +125,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _init()
 
     # If input is cleared manually, set dates to null.
-    el.change () ->
+    el.change ->
       if $.trim(el.val()) == ''
         $timeout ()->
           modelCtrl.$setViewValue(
@@ -137,7 +134,7 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           )
 
     if attrs.min
-      $scope.$watch('dateMin', (date) ->
+      $scope.$watch 'dateMin', (date) ->
         if date
           if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
             _validateMin(date, modelCtrl.$modelValue.startDate)
@@ -146,10 +143,9 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         else
           opts['minDate'] = false
         _init()
-      )
 
     if attrs.max
-      $scope.$watch('dateMax', (date) ->
+      $scope.$watch 'dateMax', (date) ->
         if date
           if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
             _validateMax(date, modelCtrl.$modelValue.endDate)
@@ -158,14 +154,11 @@ picker.directive('dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         else
           opts['maxDate'] = false
         _init()
-      )
 
     if attrs.options
-      $scope.$watch('opts', (newOpts) ->
+      $scope.$watch 'opts', (newOpts) ->
         opts = angular.extend(opts, newOpts)
         _init()
-      )
 
     $scope.$on '$destroy', ->
       _picker?.remove()
-)

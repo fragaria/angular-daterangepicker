@@ -109,7 +109,7 @@
           return val;
         });
         modelCtrl.$isEmpty = function(val) {
-          return !val || (val.startDate === null || val.endDate === null);
+          return !val || val.startDate === null || val.endDate === null;
         };
         modelCtrl.$render = function() {
           if (!modelCtrl.$modelValue) {
@@ -122,7 +122,7 @@
         };
         _init = function() {
           var callbackFunction, eventType, _ref;
-          el.daterangepicker(opts, function(start, end, label) {
+          el.daterangepicker(opts, function(start, end) {
             $timeout(function() {
               return modelCtrl.$setViewValue({
                 startDate: start,
