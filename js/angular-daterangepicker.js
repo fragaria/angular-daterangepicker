@@ -5,7 +5,8 @@
 
   picker.constant('dateRangePickerConfig', {
     separator: ' - ',
-    format: 'YYYY-MM-DD'
+    format: 'YYYY-MM-DD',
+    clearLabel: 'Clear'
   });
 
   picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
@@ -16,23 +17,33 @@
         dateMin: '=min',
         dateMax: '=max',
         model: '=ngModel',
-        opts: '=options'
+        opts: '=options',
+        clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _formatted, _init, _picker, _setEndDate, _setStartDate, _validateMax, _validateMin;
+        var clear, customOpts, el, locale, opts, _formatted, _init, _picker, _setEndDate, _setStartDate, _validateMax, _validateMin;
         el = $(element);
         customOpts = $scope.opts;
         opts = angular.extend({}, dateRangePickerConfig, customOpts);
         _picker = null;
+        clear = function() {
+          _picker.setStartDate();
+          _picker.setEndDate();
+          return el.val('');
+        };
         _setStartDate = function(newValue) {
           return $timeout(function() {
             var m;
             if (_picker) {
-              m = moment(newValue);
-              if (_picker.endDate < m) {
-                _picker.setEndDate(m);
+              if (!newValue) {
+                return clear();
+              } else {
+                m = moment(newValue);
+                if (_picker.endDate < m) {
+                  _picker.setEndDate(m);
+                }
+                return _picker.setStartDate(m);
               }
-              return _picker.setStartDate(m);
             }
           });
         };
@@ -40,11 +51,15 @@
           return $timeout(function() {
             var m;
             if (_picker) {
-              m = moment(newValue);
-              if (_picker.startDate > m) {
-                _picker.setStartDate(m);
+              if (!newValue) {
+                return clear();
+              } else {
+                m = moment(newValue);
+                if (_picker.startDate > m) {
+                  _picker.setStartDate(m);
+                }
+                return _picker.setEndDate(m);
               }
-              return _picker.setEndDate(m);
             }
           });
         };
@@ -120,6 +135,15 @@
           }
           return el.val(_formatted(modelCtrl.$modelValue));
         };
+        if (attrs.clearable) {
+          locale = opts.locale || {};
+          locale.cancelLabel = opts.clearLabel;
+          opts.locale = locale;
+          el.on('cancel.daterangepicker', function() {
+            el.val('');
+            return el.trigger('change');
+          });
+        }
         _init = function() {
           var callbackFunction, eventType, _ref;
           el.daterangepicker(opts, function(start, end) {

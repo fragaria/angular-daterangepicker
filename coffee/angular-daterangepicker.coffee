@@ -3,6 +3,7 @@ picker = angular.module('daterangepicker', [])
 picker.constant('dateRangePickerConfig',
   separator: ' - '
   format: 'YYYY-MM-DD'
+  clearLabel: 'Clear'
 )
 
 picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
@@ -13,27 +14,39 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     dateMax: '=max'
     model: '=ngModel'
     opts: '=options'
+    clearable: '='
   link: ($scope, element, attrs, modelCtrl) ->
     el = $(element)
     customOpts = $scope.opts
     opts = angular.extend({}, dateRangePickerConfig, customOpts)
     _picker = null
 
+    clear = ->
+      _picker.setStartDate()
+      _picker.setEndDate()
+      el.val('')
+
     _setStartDate = (newValue) ->
       $timeout ->
         if (_picker)
-          m = moment(newValue)
-          if (_picker.endDate < m)
-            _picker.setEndDate(m)
-          _picker.setStartDate(m)
+          if not newValue
+            clear()
+          else
+            m = moment(newValue)
+            if (_picker.endDate < m)
+              _picker.setEndDate(m)
+            _picker.setStartDate(m)
 
     _setEndDate = (newValue) ->
       $timeout ->
         if (_picker)
-          m = moment(newValue)
-          if (_picker.startDate > m)
-            _picker.setStartDate(m)
-          _picker.setEndDate(m)
+          if not newValue
+            clear()
+          else
+            m = moment(newValue)
+            if (_picker.startDate > m)
+              _picker.setStartDate(m)
+            _picker.setEndDate(m)
 
     #Watchers enable resetting of start and end dates
     $scope.$watch 'model.startDate', (newValue) ->
@@ -105,6 +118,14 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         return el.val('')
 
       return el.val(_formatted(modelCtrl.$modelValue))
+
+    if attrs.clearable
+      locale = opts.locale or {}
+      locale.cancelLabel = opts.clearLabel
+      opts.locale = locale
+      el.on 'cancel.daterangepicker', ->
+        el.val('')
+        el.trigger('change')
 
     _init = ->
       el.daterangepicker opts, (start, end) ->
