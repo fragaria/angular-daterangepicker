@@ -45,10 +45,14 @@
                     <input date-range-picker id="daterange3" class="form-control date-picker" type="text"
                            name="date" ng-model="date" options="opts" required/>
                 </div>
-
                 <div class="form-group">
-                    <label for="daterange4" class="control-label">Picker with custom format</label>
-                    <div class="input-group col-md-6" id="daterange4">
+                    <label for="daterange4" class="control-label">Clearable picker</label>
+                    <input date-range-picker id="daterange4" class="form-control date-picker" type="text"
+                           name="date" ng-model="date" clearable="true" required/>
+                </div>
+                <div class="form-group">
+                    <label for="daterange5" class="control-label">Picker with custom format</label>
+                    <div class="input-group col-md-6" id="daterange5">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         <input date-range-picker class="form-control date-picker" type="text"
                            name="date2" ng-model="date2" options="{format: 'MMMM D, YYYY'}" required/>
