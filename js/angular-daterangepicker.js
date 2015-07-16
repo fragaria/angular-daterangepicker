@@ -21,7 +21,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var clear, customOpts, el, locale, opts, _formatted, _init, _picker, _setEndDate, _setStartDate, _validateMax, _validateMin;
+        var clear, customOpts, el, opts, _formatted, _init, _picker, _setEndDate, _setStartDate, _validateMax, _validateMin;
         el = $(element);
         customOpts = $scope.opts;
         opts = angular.extend({}, dateRangePickerConfig, customOpts);
@@ -135,17 +135,8 @@
           }
           return el.val(_formatted(modelCtrl.$modelValue));
         };
-        if (attrs.clearable) {
-          locale = opts.locale || {};
-          locale.cancelLabel = opts.clearLabel;
-          opts.locale = locale;
-          el.on('cancel.daterangepicker', function() {
-            el.val('');
-            return el.trigger('change');
-          });
-        }
         _init = function() {
-          var callbackFunction, eventType, _ref;
+          var callbackFunction, eventType, locale, _ref;
           el.daterangepicker(opts, function(start, end) {
             $timeout(function() {
               return modelCtrl.$setViewValue({
@@ -160,6 +151,19 @@
           for (eventType in _ref) {
             callbackFunction = _ref[eventType];
             el.on(eventType, callbackFunction);
+          }
+          if (attrs.clearable) {
+            locale = opts.locale || {};
+            locale.cancelLabel = opts.clearLabel;
+            opts.locale = locale;
+            el.on('cancel.daterangepicker', function() {
+              modelCtrl.$setViewValue({
+                startDate: null,
+                endDate: null
+              });
+              modelCtrl.$render();
+              return el.trigger('change');
+            });
           }
         };
         _init();
