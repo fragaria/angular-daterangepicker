@@ -119,14 +119,6 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       return el.val(_formatted(modelCtrl.$modelValue))
 
-    if attrs.clearable
-      locale = opts.locale or {}
-      locale.cancelLabel = opts.clearLabel
-      opts.locale = locale
-      el.on 'cancel.daterangepicker', ->
-        el.val('')
-        el.trigger('change')
-
     _init = ->
       el.daterangepicker opts, (start, end) ->
         $timeout ->
@@ -141,6 +133,17 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       #Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
       for eventType, callbackFunction of opts.eventHandlers
         el.on eventType, callbackFunction
+
+      if attrs.clearable
+        locale = opts.locale || {}
+        locale.cancelLabel = opts.clearLabel
+        opts.locale = locale
+
+        el.on 'cancel.daterangepicker', () ->
+          modelCtrl.$setViewValue({startDate: null, endDate: null})
+          modelCtrl.$render()
+          return el.trigger 'change'
+
       return
 
     _init()
