@@ -38,7 +38,7 @@ Prepare model in your controller. The model **must** have `startDate` and `endDa
 
 ```
 exampleApp.controller('TestCtrl', function ($scope) {
-	$scope.date = {startDate: null, endDate: null};
+	$scope.datePicker.date = {startDate: null, endDate: null};
 }
 ```
 
@@ -47,11 +47,14 @@ Then in your HTML just add attribute `date-range-picker` to any input and bind i
 
 ```
 <div ng-controller="TestCtrl">
-<input date-range-picker class="form-control date-picker" type="text" ng-model="date" />
+<input date-range-picker class="form-control date-picker" type="text" ng-model="datePicker.date" />
 </div>
 ```
 
 See `example.html` for working demo.
+
+### Mind the dot!
+Do not forget to add a dot (.) in your model object to avoid [issues with scope inheritance](https://github.com/angular/angular.js/wiki/Understanding-Scopes). E.g. use `$scope.datePicker.date` instead of `$scope.date`.
 
 ## Advanced usage
 Min and max value can be set via additional attributes:
