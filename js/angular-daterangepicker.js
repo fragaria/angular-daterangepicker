@@ -207,7 +207,7 @@
           $scope.$watch('opts', function(newOpts) {
             opts = angular.extend(opts, newOpts);
             return _init();
-          });
+          }, true);
         }
         return $scope.$on('$destroy', function() {
           return _picker != null ? _picker.remove() : void 0;

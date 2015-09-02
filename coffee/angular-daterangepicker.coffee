@@ -183,6 +183,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       $scope.$watch 'opts', (newOpts) ->
         opts = angular.extend(opts, newOpts)
         _init()
+      , true
 
     $scope.$on '$destroy', ->
       _picker?.remove()
