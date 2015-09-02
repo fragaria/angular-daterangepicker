@@ -2,6 +2,7 @@
 ![Dependencies](https://david-dm.org/fragaria/angular-daterangepicker.png)
 
 Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
+**Beware: Not compatible with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.x! Use 1.3.x instead!**
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
 
@@ -92,9 +93,8 @@ All event handlers from the Bootstrap daterangepicker are supported. For referen
 `cancel.daterangepicker`: Triggered when the cancel button is clicked
 
 ## Compatibility
+**Not compatible with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.x! Use 1.3.x instead!**
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
-
-Version 0.1.0 works with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.2 and older.
 
 ## Links
 See [original documentation](https://github.com/dangrossman/bootstrap-daterangepicker).
