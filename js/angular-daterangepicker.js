@@ -150,7 +150,9 @@
           _ref = opts.eventHandlers;
           for (eventType in _ref) {
             callbackFunction = _ref[eventType];
-            el.on(eventType, callbackFunction);
+            el.on(eventType, function() {
+              $scope.$evalAsync(callbackFunction);
+            });
           }
           if (attrs.clearable) {
             locale = opts.locale || {};

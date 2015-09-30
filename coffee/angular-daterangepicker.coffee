@@ -132,7 +132,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       #Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
       for eventType, callbackFunction of opts.eventHandlers
-        el.on eventType, callbackFunction
+        el.on eventType, () ->
+          $scope.$evalAsync(callbackFunction)
 
       if attrs.clearable
         locale = opts.locale || {}
