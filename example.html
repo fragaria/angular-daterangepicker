@@ -7,7 +7,7 @@
 
     <!-- bower:css -->
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="lib/bootstrap-daterangepicker/daterangepicker-bs3.css" />
+    <link rel="stylesheet" href="lib/bootstrap-daterangepicker/daterangepicker.css" />
     <!-- endbower -->
 
 </head>
@@ -55,7 +55,7 @@
                     <div class="input-group col-md-6" id="daterange5">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         <input date-range-picker class="form-control date-picker" type="text"
-                           name="date2" ng-model="date2" options="{format: 'MMMM D, YYYY'}" required/>
+                           name="date2" ng-model="date2" options="{locale: {format: 'MMMM D, YYYY'}}" required/>
                         <span class="input-group-addon"><span class="glyphicon glyphicon-chevron-down"></span></span>
                     </div>
                 </div>
@@ -76,13 +76,13 @@
 
 <script>
 exampleApp = angular.module('example', ['daterangepicker']);
-exampleApp.controller('TestCtrl', function($scope, $interval) {
+exampleApp.controller('TestCtrl', function($scope) {
     $scope.date = {
-        startDate: moment().subtract("days", 1),
+        startDate: moment().subtract(1, "days"),
         endDate: moment()
     };
     $scope.date2 = {
-        startDate: moment().subtract("days", 1),
+        startDate: moment().subtract(1, "days"),
         endDate: moment()
     };
 
@@ -99,11 +99,10 @@ exampleApp.controller('TestCtrl', function($scope, $interval) {
             monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září',
                 'Říjen', 'Listopad', 'Prosinec'
             ]
-
         },
         ranges: {
-            'Last 7 Days': [moment().subtract('days', 6), moment()],
-            'Last 30 Days': [moment().subtract('days', 29), moment()]
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()]
         }
     };
 

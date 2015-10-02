@@ -1,6 +1,6 @@
 {
   "name": "angular-daterangepicker",
-  "version": "0.1.17",
+  "version": "0.2.0",
   "homepage": "https://github.com/fragaria/angular-daterangepicker",
   "authors": [
     "Filip Vařecha <filip.varecha@fragaria.cz>",
@@ -12,14 +12,11 @@
   "private": false,
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-coffee": "^0.7.0",
-    "grunt-contrib-uglify": "^0.3.2",
-    "grunt-contrib-watch": "^0.5.3",
-    "grunt-ng-annotate": "^0.4.0",
-    "grunt-wiredep": "^1.8.0",
-    "karma": "^0.10.2",
-    "karma-coffee-preprocessor": "^0.1.0",
-    "karma-junit-reporter": "^0.1.0",
-    "load-grunt-tasks": "^0.6.0"
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-uglify": "^0.9.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-ng-annotate": "^1.0.1",
+    "grunt-wiredep": "^2.0.0",
+    "load-grunt-tasks": "^3.3.0"
   }
 }

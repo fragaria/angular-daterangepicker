@@ -22,6 +22,7 @@ module.exports = (grunt) ->
       target:
         files:
           'js/angular-daterangepicker.min.js': ['js/angular-daterangepicker.js']
+
     wiredep:
       target:
         src: [
