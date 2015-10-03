@@ -1,6 +1,7 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
+  clearLabel: 'Clear'
   locale:
     separator: ' - '
     format: 'YYYY-MM-DD'
@@ -10,9 +11,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
   require: 'ngModel'
   restrict: 'A'
   scope:
-    dateMin: '=min'
-    dateMax: '=max'
-    model: '=ngModel'
+    min: '='
+    max: '='
+    model: '=ngmodel'
     opts: '=options'
     clearable: '='
   link: ($scope, element, attrs, modelCtrl) ->
@@ -24,17 +25,13 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     clear = ->
       _picker.setStartDate()
       _picker.setEndDate()
-      el.val('')
 
     _setDatePoint = (setter) ->
       (newValue) ->
-        $timeout ->
-          if (_picker)
-            if not newValue
-              clear()
-            else
-              m = moment(newValue)
-              setter(m)
+        if (_picker)
+          if not newValue
+          then clear()
+          else setter(moment(newValue))
 
     _setStartDate = _setDatePoint (m) ->
       if (_picker.endDate < m)
@@ -57,9 +54,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         else date.format(opts.locale.format)
 
       if opts.singleDatePicker
-        f(viewVal.startDate)
-      else
-        [f(viewVal.startDate), f(viewVal.endDate)].join(opts.locale.separator)
+      then f(viewVal.startDate)
+      else [f(viewVal.startDate), f(viewVal.endDate)].join(opts.locale.separator)
 
     _parse = (value) ->
       f = (val) ->
@@ -68,61 +64,44 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       then f(value)
       else value.split(opts.locale.separator).map(f)
 
-    _validate = (field, validator) ->
-      (expected, actual) ->
-        if expected and actual
-          expected = moment(expected)
-          actual = moment(actual)
-          valid = validator(expected, actual)
-          modelCtrl.$setValidity(field, valid)
-          valid
-        else
-          modelCtrl.$setValidity(field, true)
-          true
+    _validate = (validator) ->
+      (boundary, actual) ->
+        if boundary and actual
+        then validator(moment(boundary), moment(actual))
+        else true
 
-    _validateMin = _validate 'min', (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
-    _validateMax = _validate 'max', (max, end) -> max.isAfter(end) or max.isSame(end, 'day')
+    _validateMin = _validate (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
+    _validateMax = _validate (max, end) -> max.isAfter(end) or max.isSame(end, 'day')
 
     modelCtrl.$formatters.push (val) ->
-      if val and val.startDate and val.endDate
-        # Update datepicker dates according to val before rendering.
-        _setStartDate(val.startDate)
-        _setEndDate(val.endDate)
-        return val
-      ''
+      if val and val.startDate
+      then _format(val)
+      else ''
 
     modelCtrl.$parsers.push (val) ->
       # Check if input is valid.
-      value = {}
-      if angular.isObject(val) and val.hasOwnProperty('startDate') and val.hasOwnProperty('endDate')
-        value = val
+      value =
+        startDate: null
+        endDate: null
       if angular.isString(val) and val.length > 0
         x = _parse(val)
         value.startDate = x[0]
         value.endDate = x[1]
-
-      if value.startDate or value.endDate
-        _validateMin($scope.dateMin, value.startDate)
-        _validateMax($scope.dateMax, value.endDate)
-        return value
-
-      modelCtrl.$modelValue
+      value
 
     modelCtrl.$isEmpty = (val) ->
       # modelCtrl is empty if val is invalid or any of the ranges are not set.
       not val or val.startDate == null or val.endDate == null
 
     modelCtrl.$render = ->
-      if not modelCtrl.$modelValue or modelCtrl.$modelValue.startDate == null
-      then el.val('')
-      else el.val(_format(modelCtrl.$modelValue))
+      if modelCtrl.$modelValue and modelCtrl.$modelValue.startDate != null
+        _setStartDate(modelCtrl.$modelValue.startDate)
+        _setEndDate(modelCtrl.$modelValue.endDate)
+      else
+        clear()
 
     _init = ->
-      el.daterangepicker opts, (start, end) ->
-        $timeout ->
-          modelCtrl.$setViewValue({startDate: start, endDate: end})
-        modelCtrl.$render()
-
+      el.daterangepicker opts
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
@@ -145,32 +124,20 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     _init()
 
-    # If input is cleared manually, set dates to null.
-    el.change ->
-      if $.trim(el.val()) == ''
-        $timeout ()->
-          modelCtrl.$setViewValue(
-            startDate: null
-            endDate: null
-          )
-
-    _initDateField = (field, attribute, validator, modelName, optName) ->
-      if attrs[attribute]
+    _initBoundaryField = (field, validator, modelField, optName) ->
+      if attrs[field]
+        modelCtrl.$validators[field] = (value) ->
+          validator(opts[optName], value[modelField])
         $scope.$watch field, (date) ->
-          if date
-            if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
-              validator(date, modelCtrl.$modelValue[modelName])
-            opts[optName] = moment(date)
-          else
-            opts[optName] = false
+          opts[optName] = if date then moment(date) else false
           _init()
 
-    _initDateField('dateMin', 'min', _validateMin, 'startDate', 'minDate')
-    _initDateField('dateMax', 'max', _validateMax, 'endDate', 'maxDate')
+    _initBoundaryField('min', _validateMin, 'startDate', 'minDate')
+    _initBoundaryField('max', _validateMax, 'endDate', 'maxDate')
 
     if attrs.options
       $scope.$watch 'opts', (newOpts) ->
-        opts = angular.merge(opts, newOpts)
+        opts = angular.merge(opts, newOpts, {autoUpdateInput: false})
         _init()
       , true
 
