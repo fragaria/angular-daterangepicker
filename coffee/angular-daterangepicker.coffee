@@ -73,10 +73,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # Formatter should return just the string value of the input
     # It is used for comparison of if we should re-render
-    modelCtrl.$formatters.push (val) ->
-      if val and val.startDate
-      then _format(val)
-      else ''
+    modelCtrl.$formatters.push _format
 
     # Render should update the date picker start/end dates as necessary
     # It should also set the input element's val with $viewValue as we don't let the rangepicker do this
@@ -85,9 +82,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       if modelCtrl.$modelValue and modelCtrl.$modelValue.startDate
         _setStartDate(modelCtrl.$modelValue.startDate)
         _setEndDate(modelCtrl.$modelValue.endDate)
-      else
-        _clear()
-      # Update the input
+      else _clear()
+      # Update the input with the $viewValue (generated from $formatters)
       el.val(modelCtrl.$viewValue)
 
     # This should parse the string input into an updated model object
@@ -109,7 +105,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     modelCtrl.$isEmpty = (val) ->
       # modelCtrl is empty if val is empty string
-      not val and val.length > 0
+      not (angular.isString(val) and val.length > 0)
 
     # _init has to be called anytime we make changes to the date picker options
     _init = ->
@@ -142,7 +138,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _initBoundaryField = (field, validator, modelField, optName) ->
       if attrs[field]
         modelCtrl.$validators[field] = (value) ->
-          validator(opts[optName], value[modelField])
+          value and validator(opts[optName], value[modelField])
         $scope.$watch field, (date) ->
           opts[optName] = if date then moment(date) else false
           _init()
