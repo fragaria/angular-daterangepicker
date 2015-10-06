@@ -17,9 +17,18 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     opts: '=options'
     clearable: '='
   link: ($scope, element, attrs, modelCtrl) ->
+    # Custom angular extend function to extend locales, so they are merged instead of overwritten
+    # angular.merge removes prototypes...
+    _mergeOpts = () ->
+      localeExtend = angular.extend.apply(angular,
+        Array.prototype.slice.call(arguments).map((opt) -> opt?.locale).filter((opt) -> !!opt))
+      extend = angular.extend.apply(angular, arguments)
+      extend.locale = localeExtend
+      extend
+
     el = $(element)
     customOpts = $scope.opts
-    opts = angular.merge({}, dateRangePickerConfig, customOpts)
+    opts = _mergeOpts({}, dateRangePickerConfig, customOpts)
     _picker = null
 
     _clear = ->
@@ -149,7 +158,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Watch our options
     if attrs.options
       $scope.$watch 'opts', (newOpts) ->
-        opts = angular.merge(opts, newOpts)
+        opts = _mergeOpts(opts, newOpts)
         _init()
       , true
 
@@ -157,7 +166,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     if attrs.clearable
       $scope.$watch 'clearable', (newClearable) ->
         if newClearable
-          opts = angular.merge(opts, {locale: {cancelLabel: opts.clearLabel}})
+          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.clearLabel}})
         _init()
         el.on 'cancel.daterangepicker', (
           if newClearable
