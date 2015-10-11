@@ -1,190 +1,177 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
-  separator: ' - '
-  format: 'YYYY-MM-DD'
   clearLabel: 'Clear'
+  locale:
+    separator: ' - '
+    format: 'YYYY-MM-DD'
 )
 
 picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
   require: 'ngModel'
   restrict: 'A'
   scope:
-    dateMin: '=min'
-    dateMax: '=max'
+    min: '='
+    max: '='
     model: '=ngModel'
     opts: '=options'
     clearable: '='
   link: ($scope, element, attrs, modelCtrl) ->
+    # Custom angular extend function to extend locales, so they are merged instead of overwritten
+    # angular.merge removes prototypes...
+    _mergeOpts = () ->
+      localeExtend = angular.extend.apply(angular,
+        Array.prototype.slice.call(arguments).map((opt) -> opt?.locale).filter((opt) -> !!opt))
+      extend = angular.extend.apply(angular, arguments)
+      extend.locale = localeExtend
+      extend
+
     el = $(element)
     customOpts = $scope.opts
-    opts = angular.extend({}, dateRangePickerConfig, customOpts)
+    opts = _mergeOpts({}, dateRangePickerConfig, customOpts)
     _picker = null
 
-    clear = ->
+    _clear = ->
       _picker.setStartDate()
       _picker.setEndDate()
-      el.val('')
 
-    _setStartDate = (newValue) ->
-      $timeout ->
-        if (_picker)
-          if not newValue
-            clear()
-          else
-            m = moment(newValue)
-            if (_picker.endDate < m)
-              _picker.setEndDate(m)
-            _picker.setStartDate(m)
+    _setDatePoint = (setter) ->
+      (newValue) ->
+        if _picker and newValue
+          setter(moment(newValue))
 
-    _setEndDate = (newValue) ->
-      $timeout ->
-        if (_picker)
-          if not newValue
-            clear()
-          else
-            m = moment(newValue)
-            if (_picker.startDate > m)
-              _picker.setStartDate(m)
-            _picker.setEndDate(m)
+    _setStartDate = _setDatePoint (m) ->
+      if (_picker.endDate < m)
+        _picker.setEndDate(m)
+      _picker.setStartDate(m)
 
-    #Watchers enable resetting of start and end dates
-    $scope.$watch 'model.startDate', (newValue) ->
-      _setStartDate(newValue)
+    _setEndDate = _setDatePoint (m) ->
+      if (_picker.startDate > m)
+        _picker.setStartDate(m)
+      _picker.setEndDate(m)
 
-    $scope.$watch 'model.endDate', (newValue) ->
-      _setEndDate(newValue)
-
-    _formatted = (viewVal) ->
+    # Formats the obj into the string for the element input
+    _format = (objValue) ->
       f = (date) ->
         if not moment.isMoment(date)
-          return moment(date).format(opts.format)
-        return date.format(opts.format)
+        then moment(date).format(opts.locale.format)
+        else date.format(opts.locale.format)
 
-      if opts.singleDatePicker
-        f(viewVal.startDate)
-      else
-        [f(viewVal.startDate), f(viewVal.endDate)].join(opts.separator)
+      if objValue and objValue.startDate
+        if opts.singleDatePicker
+        then f(objValue.startDate)
+        else [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
+      else ''
 
-    _validateMin = (min, start) ->
-      min = moment(min)
-      start = moment(start)
-      valid = min.isBefore(start) or min.isSame(start, 'day')
-      modelCtrl.$setValidity('min', valid)
-      return valid
+    # Sets the viewValue as well as updating the input element's value
+    # Note: This is necessary as we don't allow the date picker to update the text (using autoUpdateInput: false)
+    _setViewValue = (objValue) ->
+      value = _format(objValue)
+      el.val(value)
+      modelCtrl.$setViewValue(value)
 
-    _validateMax = (max, end) ->
-      max = moment(max)
-      end = moment(end)
-      valid = max.isAfter(end) or max.isSame(end, 'day')
-      modelCtrl.$setValidity('max', valid)
-      return valid
+    # Validation for our min/max
+    _validate = (validator) ->
+      (boundary, actual) ->
+        if boundary and actual
+        then validator(moment(boundary), moment(actual))
+        else true
 
-    modelCtrl.$formatters.push (val) ->
-      if val and val.startDate and val.endDate
-        # Update datepicker dates according to val before rendering.
-        _setStartDate(val.startDate)
-        _setEndDate(val.endDate)
-        return val
-      return ''
+    _validateMin = _validate (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
+    _validateMax = _validate (max, end) -> max.isAfter(end) or max.isSame(end, 'day')
 
+    # Formatter should return just the string value of the input
+    # It is used for comparison of if we should re-render
+    modelCtrl.$formatters.push _format
+
+    # Render should update the date picker start/end dates as necessary
+    # It should also set the input element's val with $viewValue as we don't let the rangepicker do this
+    modelCtrl.$render = () ->
+      # Update the calendars
+      if modelCtrl.$modelValue and modelCtrl.$modelValue.startDate
+        _setStartDate(modelCtrl.$modelValue.startDate)
+        _setEndDate(modelCtrl.$modelValue.endDate)
+      else _clear()
+      # Update the input with the $viewValue (generated from $formatters)
+      el.val(modelCtrl.$viewValue)
+
+    # This should parse the string input into an updated model object
     modelCtrl.$parsers.push (val) ->
-      # Check if input is valid.
-      if not angular.isObject(val) or not (val.hasOwnProperty('startDate') and val.hasOwnProperty('endDate'))
-        return modelCtrl.$modelValue
-
-      # If min-max set, validate as well.
-      if $scope.dateMin and val.startDate
-        _validateMin($scope.dateMin, val.startDate)
-      else
-        modelCtrl.$setValidity('min', true)
-
-      if $scope.dateMax and val.endDate
-        _validateMax($scope.dateMax, val.endDate)
-      else
-        modelCtrl.$setValidity('max', true)
-
-      return val
+      # Parse the string value
+      f = (value) ->
+        moment(value, opts.locale.format)
+      objValue =
+        startDate: null
+        endDate: null
+      if angular.isString(val) and val.length > 0
+        if opts.singleDatePicker
+          objValue.startDate = f(val)
+        else
+          x = val.split(opts.locale.separator).map(f)
+          objValue.startDate = x[0]
+          objValue.endDate = x[1]
+      objValue
 
     modelCtrl.$isEmpty = (val) ->
-      # modelCtrl is empty if val is invalid or any of the ranges are not set.
-      not val or val.startDate == null or val.endDate == null
+      # modelCtrl is empty if val is empty string
+      not (angular.isString(val) and val.length > 0)
 
-    modelCtrl.$render = ->
-      if not modelCtrl.$modelValue
-        return el.val('')
-
-      if modelCtrl.$modelValue.startDate == null
-        return el.val('')
-
-      return el.val(_formatted(modelCtrl.$modelValue))
-
+    # _init has to be called anytime we make changes to the date picker options
     _init = ->
-      el.daterangepicker opts, (start, end) ->
-        $timeout ->
-          modelCtrl.$setViewValue({startDate: start, endDate: end})
-        modelCtrl.$render()
-
+      # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
+      # update our $viewValue, which triggers the $parsers
+      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
+        _setViewValue({startDate: start, endDate: end})
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
       _picker = el.data('daterangepicker')
 
-      #Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
+      # Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
       for eventType, callbackFunction of opts.eventHandlers
         el.on eventType, () ->
           $scope.$evalAsync(callbackFunction)
 
-      if attrs.clearable
-        locale = opts.locale || {}
-        locale.cancelLabel = opts.clearLabel
-        opts.locale = locale
-
-        el.on 'cancel.daterangepicker', () ->
-          modelCtrl.$setViewValue({startDate: null, endDate: null})
-          modelCtrl.$render()
-          return el.trigger 'change'
-
-      return
-
     _init()
 
-    # If input is cleared manually, set dates to null.
-    el.change ->
-      if $.trim(el.val()) == ''
-        $timeout ()->
-          modelCtrl.$setViewValue(
-            startDate: null
-            endDate: null
-          )
+    # Watchers enable resetting of start and end dates
+    # Update the date picker, and set a new viewValue of the model
+    $scope.$watch 'model.startDate', (n) ->
+      _setStartDate(n)
+      _setViewValue($scope.model)
+    $scope.$watch 'model.endDate', (n) ->
+      _setEndDate(n)
+      _setViewValue($scope.model)
 
-    if attrs.min
-      $scope.$watch 'dateMin', (date) ->
-        if date
-          if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
-            _validateMin(date, modelCtrl.$modelValue.startDate)
+    # Add validation/watchers for our min/max fields
+    _initBoundaryField = (field, validator, modelField, optName) ->
+      if attrs[field]
+        modelCtrl.$validators[field] = (value) ->
+          value and validator(opts[optName], value[modelField])
+        $scope.$watch field, (date) ->
+          opts[optName] = if date then moment(date) else false
+          _init()
 
-          opts['minDate'] = moment(date)
-        else
-          opts['minDate'] = false
-        _init()
+    _initBoundaryField('min', _validateMin, 'startDate', 'minDate')
+    _initBoundaryField('max', _validateMax, 'endDate', 'maxDate')
 
-    if attrs.max
-      $scope.$watch 'dateMax', (date) ->
-        if date
-          if not modelCtrl.$isEmpty(modelCtrl.$modelValue)
-            _validateMax(date, modelCtrl.$modelValue.endDate)
-
-          opts['maxDate'] = moment(date)
-        else
-          opts['maxDate'] = false
-        _init()
-
+    # Watch our options
     if attrs.options
       $scope.$watch 'opts', (newOpts) ->
-        opts = angular.extend(opts, newOpts)
+        opts = _mergeOpts(opts, newOpts)
         _init()
       , true
+
+    # Watch clearable flag
+    if attrs.clearable
+      $scope.$watch 'clearable', (newClearable) ->
+        if newClearable
+          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.clearLabel}})
+        _init()
+        el.on 'cancel.daterangepicker', (
+          if newClearable
+          then _setViewValue.bind(this, {startDate: null, endDate: null})
+          else null)
 
     $scope.$on '$destroy', ->
       _picker?.remove()

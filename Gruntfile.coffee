@@ -5,6 +5,11 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
 
+    coffeelint:
+      options:
+        configFile: 'coffeelint.json'
+      source: ['coffee/angular-daterangepicker.coffee']
+
     coffee:
       compileJoined:
         options:
@@ -14,7 +19,7 @@ module.exports = (grunt) ->
 
     watch:
       files: ['example.html', 'coffee/*.coffee']
-      tasks: ['coffee']
+      tasks: ['default']
 
     uglify:
       options:
@@ -22,6 +27,7 @@ module.exports = (grunt) ->
       target:
         files:
           'js/angular-daterangepicker.min.js': ['js/angular-daterangepicker.js']
+
     wiredep:
       target:
         src: [
@@ -38,6 +44,6 @@ module.exports = (grunt) ->
 
 
   # Default task(s).
-  grunt.registerTask "default", ["coffee"]
-  grunt.registerTask "develop", ["coffee", "watch"]
-  grunt.registerTask "dist", ["coffee", "ngAnnotate", "uglify"]
+  grunt.registerTask "default", ["coffeelint", "coffee"]
+  grunt.registerTask "develop", ["default", "watch"]
+  grunt.registerTask "dist", ["default", "ngAnnotate", "uglify"]
