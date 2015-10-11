@@ -3,7 +3,8 @@
 
 Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
 
-**Beware: Not compatible with [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.x! Use 1.3.x instead!**
+**Beware: Use [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.0.0 and never!
+Older version of datepicker are supported with 0.1.17 release**
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
 
@@ -106,3 +107,7 @@ The PRs are more than welcome – thank you for those.
 
 Please send PRs only for `*.coffee` code. Javascript and minified Javascript should be generated with `grunt dist` command
 just before the commit.
+
+## Contributors
+See [CONTRIBUTORS.md](https://github.com/fragaria/angular-daterangepicker/blob/master/CONTRIBUTORS.md) for all the great folks who contributed to this repo!
+Thank you, guys!
