@@ -148,11 +148,21 @@
           _picker = el.data('daterangepicker');
           _ref = opts.eventHandlers;
           _results = [];
-          for (eventType in _ref) {
+
+          //below is old
+          /*for (eventType in _ref) {
             callbackFunction = _ref[eventType];
             _results.push(el.on(eventType, function() {
               return $scope.$evalAsync(callbackFunction);
             }));
+          }*/
+
+          //below is new and it solved multi-eventHandler binding problem
+          for (eventType in _ref) {
+            el.on(eventType, function(e) {
+              var eventName = e.type + '.' + e.namespace;
+              return $scope.$evalAsync(_ref[eventName]);
+            })
           }
           return _results;
         };
