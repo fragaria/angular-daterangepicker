@@ -107,6 +107,8 @@ The PRs are more than welcome – thank you for those.
 Please send PRs only for `*.coffee` code. Javascript and minified Javascript should be generated with `grunt dist` command
 just before the commit.
 
+[![Throughput Graph](https://graphs.waffle.io/fragaria/angular-daterangepicker/throughput.svg)](https://waffle.io/fragaria/angular-daterangepicker/metrics)
+
 ## Contributors
 See [CONTRIBUTORS.md](https://github.com/fragaria/angular-daterangepicker/blob/master/CONTRIBUTORS.md) for all the great folks who contributed to this repo!
 Thank you, guys!
