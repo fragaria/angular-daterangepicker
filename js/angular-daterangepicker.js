@@ -71,7 +71,7 @@
               return date.format(opts.locale.format);
             }
           };
-          if (objValue && objValue.startDate) {
+          if (objValue) {
             if (opts.singleDatePicker) {
               return f(objValue.startDate);
             } else {
@@ -123,7 +123,7 @@
           };
           if (angular.isString(val) && val.length > 0) {
             if (opts.singleDatePicker) {
-              objValue.startDate = f(val);
+              objValue = f(val);
             } else {
               x = val.split(opts.locale.separator).map(f);
               objValue.startDate = x[0];
