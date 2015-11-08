@@ -11,7 +11,7 @@
     }
   });
 
-  picker.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -205,6 +205,6 @@
         });
       }
     };
-  });
+  }]);
 
 }).call(this);
