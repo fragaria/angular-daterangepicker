@@ -57,7 +57,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         then moment(date).format(opts.locale.format)
         else date.format(opts.locale.format)
 
-      if objValue and objValue.startDate
+      if objValue
         if opts.singleDatePicker
         then f(objValue.startDate)
         else [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
@@ -105,7 +105,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         endDate: null
       if angular.isString(val) and val.length > 0
         if opts.singleDatePicker
-          objValue.startDate = f(val)
+          objValue = f(val)
         else
           x = val.split(opts.locale.separator).map(f)
           objValue.startDate = x[0]

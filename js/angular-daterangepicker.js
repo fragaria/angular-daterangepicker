@@ -23,7 +23,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin;
+        var _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin, customOpts, el, opts;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -71,7 +71,7 @@
               return date.format(opts.locale.format);
             }
           };
-          if (objValue && objValue.startDate) {
+          if (objValue) {
             if (opts.singleDatePicker) {
               return f(objValue.startDate);
             } else {
@@ -123,7 +123,7 @@
           };
           if (angular.isString(val) && val.length > 0) {
             if (opts.singleDatePicker) {
-              objValue.startDate = f(val);
+              objValue = f(val);
             } else {
               x = val.split(opts.locale.separator).map(f);
               objValue.startDate = x[0];
@@ -136,7 +136,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var callbackFunction, eventType, _ref, _results;
+          var callbackFunction, eventType, ref, results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(start, end) {
@@ -146,15 +146,15 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _ref = opts.eventHandlers;
-          _results = [];
-          for (eventType in _ref) {
-            callbackFunction = _ref[eventType];
-            _results.push(el.on(eventType, function() {
+          ref = opts.eventHandlers;
+          results = [];
+          for (eventType in ref) {
+            callbackFunction = ref[eventType];
+            results.push(el.on(eventType, function() {
               return $scope.$evalAsync(callbackFunction);
             }));
           }
-          return _results;
+          return results;
         };
         _init();
         $scope.$watch('model.startDate', function(n) {
