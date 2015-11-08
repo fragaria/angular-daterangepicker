@@ -129,11 +129,11 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       # Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
       # Revised
-          
+
       for eventType of opts.eventHandlers
         el.on eventType, (e) ->
-          eventName = e.type + '.' + e.namespace;
-          $scope.$evalAsync(opts.eventHandlers[eventName]);
+          eventName = e.type + '.' + e.namespace
+          $scope.$evalAsync(opts.eventHandlers[eventName])
 
     _init()
 

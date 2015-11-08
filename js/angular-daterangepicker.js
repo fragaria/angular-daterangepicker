@@ -11,7 +11,7 @@
     }
   });
 
-  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -136,7 +136,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var callbackFunction, eventType, _ref, _results;
+          var eventType, _results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(start, end) {
@@ -146,12 +146,12 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _ref = opts.eventHandlers;
           _results = [];
-          for (eventType in _ref) {
-            callbackFunction = _ref[eventType];
-            _results.push(el.on(eventType, function() {
-              return $scope.$evalAsync(callbackFunction);
+          for (eventType in opts.eventHandlers) {
+            _results.push(el.on(eventType, function(e) {
+              var eventName;
+              eventName = e.type + '.' + e.namespace;
+              return $scope.$evalAsync(opts.eventHandlers[eventName]);
             }));
           }
           return _results;
@@ -205,6 +205,6 @@
         });
       }
     };
-  }]);
+  });
 
 }).call(this);
