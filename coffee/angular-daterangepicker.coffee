@@ -10,6 +10,7 @@ picker.constant('dateRangePickerConfig',
 picker.directive 'dateRangeRequired', ['$q', ($q) ->
   require: 'ngModel',
   link: ($scope, element, attrs, modelCtrl) ->
+    # Add a validator property to the date range picker. Can be used by normal form validation
     modelCtrl.$asyncValidators.dateRangeRequired = (modelValue) ->
       d = $q.defer()
       if !modelValue.hasOwnProperty('startDate') or !modelValue.startDate? \
