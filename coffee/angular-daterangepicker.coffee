@@ -7,6 +7,19 @@ picker.constant('dateRangePickerConfig',
     format: 'YYYY-MM-DD'
 )
 
+picker.directive 'dateRangeRequired', ['$q', ($q) ->
+  require: 'ngModel',
+  link: ($scope, element, attrs, modelCtrl) ->
+    modelCtrl.$asyncValidators.dateRangeRequired = (modelValue) ->
+      d = $q.defer()
+      if !modelValue.hasOwnProperty('startDate') or !modelValue.startDate? \
+      or !modelValue.hasOwnProperty('endDate') or !modelValue.endDate?
+        d.reject()
+      else
+        d.resolve()
+      return d.promise
+]
+
 picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
   require: 'ngModel'
   restrict: 'A'
