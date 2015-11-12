@@ -11,6 +11,26 @@
     }
   });
 
+  picker.directive('dateRangeRequired', [
+    '$q', function($q) {
+      return {
+        require: 'ngModel',
+        link: function($scope, element, attrs, modelCtrl) {
+          return modelCtrl.$asyncValidators.dateRangeRequired = function(modelValue) {
+            var d;
+            d = $q.defer();
+            if (!modelValue.hasOwnProperty('startDate') || (modelValue.startDate == null) || !modelValue.hasOwnProperty('endDate') || (modelValue.endDate == null)) {
+              d.reject();
+            } else {
+              d.resolve();
+            }
+            return d.promise;
+          };
+        }
+      };
+    }
+  ]);
+
   picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
@@ -23,7 +43,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin;
+        var _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin, customOpts, el, opts;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -136,7 +156,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var eventType, _results;
+          var eventType, results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(start, end) {
@@ -146,15 +166,15 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _results = [];
+          results = [];
           for (eventType in opts.eventHandlers) {
-            _results.push(el.on(eventType, function(e) {
+            results.push(el.on(eventType, function(e) {
               var eventName;
               eventName = e.type + '.' + e.namespace;
               return $scope.$evalAsync(opts.eventHandlers[eventName]);
             }));
           }
-          return _results;
+          return results;
         };
         _init();
         $scope.$watch('model.startDate', function(n) {
