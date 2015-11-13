@@ -50,26 +50,6 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         _picker.setStartDate(m)
       _picker.setEndDate(m)
 
-    # Formats the obj into the string for the element input
-    _format = (objValue) ->
-      f = (date) ->
-        if not moment.isMoment(date)
-        then moment(date).format(opts.locale.format)
-        else date.format(opts.locale.format)
-
-      if objValue
-        if opts.singleDatePicker
-        then f(objValue.startDate)
-        else [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
-      else ''
-
-    # Sets the viewValue as well as updating the input element's value
-    # Note: This is necessary as we don't allow the date picker to update the text (using autoUpdateInput: false)
-    _setViewValue = (objValue) ->
-      value = _format(objValue)
-      el.val(value)
-      modelCtrl.$setViewValue(value)
-
     # Validation for our min/max
     _validate = (validator) ->
       (boundary, actual) ->
@@ -82,7 +62,17 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # Formatter should return just the string value of the input
     # It is used for comparison of if we should re-render
-    modelCtrl.$formatters.push _format
+    modelCtrl.$formatters.push (objValue) ->
+      f = (date) ->
+        if not moment.isMoment(date)
+        then moment(date).format(opts.locale.format)
+        else date.format(opts.locale.format)
+
+      if opts.singleDatePicker and objValue
+        f(objValue)
+      else if objValue.startDate
+        [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
+      else ''
 
     # Render should update the date picker start/end dates as necessary
     # It should also set the input element's val with $viewValue as we don't let the rangepicker do this
@@ -121,7 +111,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
       # update our $viewValue, which triggers the $parsers
       el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
-        _setViewValue({startDate: start, endDate: end})
+        $scope.model = {startDate: start, endDate: end}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
@@ -141,10 +131,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Update the date picker, and set a new viewValue of the model
     $scope.$watch 'model.startDate', (n) ->
       _setStartDate(n)
-      _setViewValue($scope.model)
     $scope.$watch 'model.endDate', (n) ->
       _setEndDate(n)
-      _setViewValue($scope.model)
 
     # Add validation/watchers for our min/max fields
     _initBoundaryField = (field, validator, modelField, optName) ->
@@ -171,10 +159,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         if newClearable
           opts = _mergeOpts(opts, {locale: {cancelLabel: opts.clearLabel}})
         _init()
-        el.on 'cancel.daterangepicker', (
-          if newClearable
-          then _setViewValue.bind(this, {startDate: null, endDate: null})
-          else null)
+        if newClearable
+          el.on 'cancel.daterangepicker', () ->
+            $scope.model = {startDate: null, endDate: null}
 
     $scope.$on '$destroy', ->
       _picker?.remove()
