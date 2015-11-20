@@ -5,31 +5,12 @@
 
   picker.constant('dateRangePickerConfig', {
     clearLabel: 'Clear',
+    nonull: true,
     locale: {
       separator: ' - ',
       format: 'YYYY-MM-DD'
     }
   });
-
-  picker.directive('dateRangeRequired', [
-    '$q', function($q) {
-      return {
-        require: 'ngModel',
-        link: function($scope, element, attrs, modelCtrl) {
-          return modelCtrl.$asyncValidators.dateRangeRequired = function(modelValue) {
-            var d;
-            d = $q.defer();
-            if (!modelValue.hasOwnProperty('startDate') || (modelValue.startDate == null) || !modelValue.hasOwnProperty('endDate') || (modelValue.endDate == null)) {
-              d.reject();
-            } else {
-              d.resolve();
-            }
-            return d.promise;
-          };
-        }
-      };
-    }
-  ]);
 
   picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
@@ -103,14 +84,20 @@
         };
         _setViewValue = function(objValue) {
           var value;
-          value = _format(objValue);
+          if (objValue.hasOwnProperty('startDate') && objValue.startDate === null || objValue.hasOwnProperty('endDate') && objValue.endDate === null) {
+            value = null;
+          } else {
+            value = _format(objValue);
+          }
           el.val(value);
           return modelCtrl.$setViewValue(value);
         };
-        _validate = function(validator) {
+        _validate = function(validator, nonull) {
           return function(boundary, actual) {
             if (boundary && actual) {
               return validator(moment(boundary), moment(actual));
+            } else if (opts.hasOwnProperty('nonull') && opts.nonull && !actual) {
+              return false;
             } else {
               return true;
             }

@@ -2,24 +2,11 @@ picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
   clearLabel: 'Clear'
+  nonull: true
   locale:
     separator: ' - '
     format: 'YYYY-MM-DD'
 )
-
-picker.directive 'dateRangeRequired', ['$q', ($q) ->
-  require: 'ngModel',
-  link: ($scope, element, attrs, modelCtrl) ->
-    # Add a validator property to the date range picker. Can be used by normal form validation
-    modelCtrl.$asyncValidators.dateRangeRequired = (modelValue) ->
-      d = $q.defer()
-      if !modelValue.hasOwnProperty('startDate') or !modelValue.startDate? \
-      or !modelValue.hasOwnProperty('endDate') or !modelValue.endDate?
-        d.reject()
-      else
-        d.resolve()
-      return d.promise
-]
 
 picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
   require: 'ngModel'
@@ -80,15 +67,21 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Sets the viewValue as well as updating the input element's value
     # Note: This is necessary as we don't allow the date picker to update the text (using autoUpdateInput: false)
     _setViewValue = (objValue) ->
-      value = _format(objValue)
+      if (objValue.hasOwnProperty('startDate') and objValue.startDate == null \
+      or objValue.hasOwnProperty('endDate') and objValue.endDate == null)
+        value = null
+      else
+        value = _format(objValue)
       el.val(value)
       modelCtrl.$setViewValue(value)
 
     # Validation for our min/max
-    _validate = (validator) ->
+    _validate = (validator, nonull) ->
       (boundary, actual) ->
         if boundary and actual
         then validator(moment(boundary), moment(actual))
+        else if opts.hasOwnProperty('nonull') and opts.nonull and !actual
+        then false
         else true
 
     _validateMin = _validate (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
