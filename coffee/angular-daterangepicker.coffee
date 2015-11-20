@@ -67,7 +67,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Sets the viewValue as well as updating the input element's value
     # Note: This is necessary as we don't allow the date picker to update the text (using autoUpdateInput: false)
     _setViewValue = (objValue) ->
-      if (objValue.hasOwnProperty('startDate') and objValue.startDate == null \
+      if (!objValue \
+      or objValue.hasOwnProperty('startDate') and objValue.startDate == null \
       or objValue.hasOwnProperty('endDate') and objValue.endDate == null)
         value = null
       else

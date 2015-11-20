@@ -84,7 +84,7 @@
         };
         _setViewValue = function(objValue) {
           var value;
-          if (objValue.hasOwnProperty('startDate') && objValue.startDate === null || objValue.hasOwnProperty('endDate') && objValue.endDate === null) {
+          if (!objValue || objValue.hasOwnProperty('startDate') && objValue.startDate === null || objValue.hasOwnProperty('endDate') && objValue.endDate === null) {
             value = null;
           } else {
             value = _format(objValue);
