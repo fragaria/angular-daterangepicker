@@ -1,8 +1,8 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
-  clearLabel: 'Clear'
   locale:
+    clearLabel: 'Clear'
     separator: ' - '
     format: 'YYYY-MM-DD'
 )
@@ -169,12 +169,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     if attrs.clearable
       $scope.$watch 'clearable', (newClearable) ->
         if newClearable
-          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.clearLabel}})
+          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.locale.clearLabel}})
         _init()
-        el.on 'cancel.daterangepicker', (
-          if newClearable
-          then _setViewValue.bind(this, {startDate: null, endDate: null})
-          else null)
+        el.on 'cancel.daterangepicker', ->
+          _setViewValue(null) if newClearable
 
     $scope.$on '$destroy', ->
       _picker?.remove()

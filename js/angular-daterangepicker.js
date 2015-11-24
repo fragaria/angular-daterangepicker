@@ -4,8 +4,8 @@
   picker = angular.module('daterangepicker', []);
 
   picker.constant('dateRangePickerConfig', {
-    clearLabel: 'Clear',
     locale: {
+      clearLabel: 'Clear',
       separator: ' - ',
       format: 'YYYY-MM-DD'
     }
@@ -23,7 +23,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin;
+        var _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin, customOpts, el, opts;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -136,7 +136,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var eventType, _results;
+          var eventType, results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(start, end) {
@@ -146,15 +146,15 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _results = [];
+          results = [];
           for (eventType in opts.eventHandlers) {
-            _results.push(el.on(eventType, function(e) {
+            results.push(el.on(eventType, function(e) {
               var eventName;
               eventName = e.type + '.' + e.namespace;
               return $scope.$evalAsync(opts.eventHandlers[eventName]);
             }));
           }
-          return _results;
+          return results;
         };
         _init();
         $scope.$watch('model.startDate', function(n) {
@@ -189,15 +189,16 @@
             if (newClearable) {
               opts = _mergeOpts(opts, {
                 locale: {
-                  cancelLabel: opts.clearLabel
+                  cancelLabel: opts.locale.clearLabel
                 }
               });
             }
             _init();
-            return el.on('cancel.daterangepicker', (newClearable ? _setViewValue.bind(this, {
-              startDate: null,
-              endDate: null
-            }) : null));
+            return el.on('cancel.daterangepicker', function() {
+              if (newClearable) {
+                return _setViewValue(null);
+              }
+            });
           });
         }
         return $scope.$on('$destroy', function() {
