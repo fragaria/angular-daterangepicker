@@ -38,7 +38,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _setDatePoint = (setter) ->
       (newValue) ->
         if _picker and newValue
-          setter(moment(newValue))
+          setter(moment(newValue).toDate())
 
     _setStartDate = _setDatePoint (m) ->
       if (_picker.endDate < m)
@@ -52,16 +52,15 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # Formats the obj into the string for the element input
     _format = (objValue) ->
-      f = (date) ->
-        if not moment.isMoment(date)
-        then moment(date).format(opts.locale.format)
-        else date.format(opts.locale.format)
+      dateToString = (date) ->
+        moment(date).format(opts.locale.format)
 
-      if objValue
-        if opts.singleDatePicker
-        then f(objValue.startDate)
-        else [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
-      else ''
+      if opts.singleDatePicker and objValue
+        dateToString(objValue.startDate)
+      else if objValue?.startDate and objValue?.endDate
+        [dateToString(objValue.startDate), dateToString(objValue.endDate)].join(opts.locale.separator)
+      else
+        ''
 
     # Sets the viewValue as well as updating the input element's value
     # Note: This is necessary as we don't allow the date picker to update the text (using autoUpdateInput: false)
@@ -74,8 +73,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _validate = (validator) ->
       (boundary, actual) ->
         if boundary and actual
-        then validator(moment(boundary), moment(actual))
-        else true
+          validator(moment(boundary), moment(actual))
+        else
+          true
 
     _validateMin = _validate (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
     _validateMax = _validate (max, end) -> max.isAfter(end) or max.isSame(end, 'day')
@@ -139,11 +139,11 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # Watchers enable resetting of start and end dates
     # Update the date picker, and set a new viewValue of the model
-    $scope.$watch 'model.startDate', (n) ->
-      _setStartDate(n)
+    $scope.$watch 'model.startDate', (newDate) ->
+      _setStartDate(newDate)
       _setViewValue($scope.model)
-    $scope.$watch 'model.endDate', (n) ->
-      _setEndDate(n)
+    $scope.$watch 'model.endDate', (newDate) ->
+      _setEndDate(newDate)
       _setViewValue($scope.model)
 
     # Add validation/watchers for our min/max fields
