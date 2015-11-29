@@ -43,11 +43,13 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _setStartDate = _setDatePoint (m) ->
       if (_picker.endDate < m)
         _picker.setEndDate(m)
+      opts.startDate = m
       _picker.setStartDate(m)
 
     _setEndDate = _setDatePoint (m) ->
       if (_picker.startDate > m)
         _picker.setStartDate(m)
+      opts.endDate = m
       _picker.setEndDate(m)
 
     # Formats the obj into the string for the element input

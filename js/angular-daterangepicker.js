@@ -23,7 +23,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var customOpts, el, opts, _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin;
+        var _clear, _format, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _setViewValue, _validate, _validateMax, _validateMin, customOpts, el, opts;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -54,12 +54,14 @@
           if (_picker.endDate < m) {
             _picker.setEndDate(m);
           }
+          opts.startDate = m;
           return _picker.setStartDate(m);
         });
         _setEndDate = _setDatePoint(function(m) {
           if (_picker.startDate > m) {
             _picker.setStartDate(m);
           }
+          opts.endDate = m;
           return _picker.setEndDate(m);
         });
         _format = function(objValue) {
@@ -136,7 +138,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var eventType, _results;
+          var eventType, results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(start, end) {
@@ -146,15 +148,15 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _results = [];
+          results = [];
           for (eventType in opts.eventHandlers) {
-            _results.push(el.on(eventType, function(e) {
+            results.push(el.on(eventType, function(e) {
               var eventName;
               eventName = e.type + '.' + e.namespace;
               return $scope.$evalAsync(opts.eventHandlers[eventName]);
             }));
           }
-          return _results;
+          return results;
         };
         _init();
         $scope.$watch('model.startDate', function(n) {
