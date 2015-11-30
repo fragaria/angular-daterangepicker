@@ -3,6 +3,8 @@
 
 Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
 
+[DEMO](http://fragaria.github.io/angular-daterangepicker/)
+
 **Beware: Use [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.0.0 and newer!
 Older version of datepicker are supported with 0.1.17 release**
 
