@@ -111,7 +111,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
       # update our $viewValue, which triggers the $parsers
       el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
-        $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
+        $scope.$apply () ->
+          $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
@@ -161,7 +162,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         _init()
         if newClearable
           el.on 'cancel.daterangepicker', () ->
-            $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+            $scope.$apply () ->
+              $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
 
     $scope.$on '$destroy', ->
       _picker?.remove()
