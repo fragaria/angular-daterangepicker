@@ -54,12 +54,14 @@
           if (_picker.endDate < m) {
             _picker.setEndDate(m);
           }
+          opts.startDate = m;
           return _picker.setStartDate(m);
         });
         _setEndDate = _setDatePoint(function(m) {
           if (_picker.startDate > m) {
             _picker.setStartDate(m);
           }
+          opts.endDate = m;
           return _picker.setEndDate(m);
         });
         _validate = function(validator) {
