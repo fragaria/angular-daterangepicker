@@ -106,8 +106,9 @@ See [original documentation](https://github.com/dangrossman/bootstrap-daterangep
 ## Issues and Pull Requests
 The PRs are more than welcome – thank you for those.
 
-Please send PRs only for `*.coffee` code. Javascript and minified Javascript should be generated with `grunt dist` command
-just before the commit.
+Please send me PRs only for `*.coffee` code. **Please, do not include Javascript and minified Javascript into PRs.**
+Javascript and minified Javascript will be generated later with `grunt dist` command
+just before the release.
 
 [![Throughput Graph](https://graphs.waffle.io/fragaria/angular-daterangepicker/throughput.svg)](https://waffle.io/fragaria/angular-daterangepicker/metrics)
 
