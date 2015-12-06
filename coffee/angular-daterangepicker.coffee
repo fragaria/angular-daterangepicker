@@ -72,7 +72,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
       if opts.singleDatePicker and objValue
         f(objValue)
-      else if objValue.startDate
+      else if objValue and objValue.startDate
         [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
       else ''
 
