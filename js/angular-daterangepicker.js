@@ -88,9 +88,9 @@
               return date.format(opts.locale.format);
             }
           };
-          if (opts.singleDatePicker && objValue) {
+          if (opts.singleDatePicker && angular.isDefined(objValue)) {
             return f(objValue);
-          } else if (objValue.startDate) {
+          } else if (angular.isDefined(objValue) && objValue.startDate) {
             return [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator);
           } else {
             return '';
