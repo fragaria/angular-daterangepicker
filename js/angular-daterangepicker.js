@@ -97,13 +97,19 @@
           }
         });
         modelCtrl.$render = function() {
+          var value;
           if (modelCtrl.$modelValue && modelCtrl.$modelValue.startDate) {
             _setStartDate(modelCtrl.$modelValue.startDate);
             _setEndDate(modelCtrl.$modelValue.endDate);
           } else {
             _clear();
           }
-          return el.val(modelCtrl.$viewValue);
+          value = modelCtrl.$viewValue;
+          if (el.is('input')) {
+            return el.val(value);
+          } else {
+            return el.text(value);
+          }
         };
         modelCtrl.$parsers.push(function(val) {
           var f, objValue, x;
