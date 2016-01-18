@@ -3,15 +3,30 @@
 
   picker = angular.module('daterangepicker', []);
 
-  picker.constant('dateRangePickerConfig', {
-    clearLabel: 'Clear',
-    locale: {
-      separator: ' - ',
-      format: 'YYYY-MM-DD'
-    }
+  picker.provider('dateRangePickerOptions', function() {
+    var DefaultOptions, defaultOptions;
+    defaultOptions = {
+      clearLabel: 'Clear',
+      locale: {
+        separator: ' - ',
+        format: 'YYYY-MM-DD'
+      }
+    };
+    DefaultOptions = function(options) {
+      return defaultOptions = options;
+    };
+    this.setDefaultOptions = function(options) {
+      defaultOptions = options;
+    };
+    this.$get = [
+      function() {
+        return DefaultOptions(defaultOptions);
+      }
+    ];
+    return this;
   });
 
-  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerOptions) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -23,7 +38,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validate, _validateMax, _validateMin, customOpts, el, opts;
+        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validate, _validateMax, _validateMin, customOpts, defaultOpts, el, opts;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -37,7 +52,8 @@
         };
         el = $(element);
         customOpts = $scope.opts;
-        opts = _mergeOpts({}, dateRangePickerConfig, customOpts);
+        defaultOpts = angular.copy(dateRangePickerOptions);
+        opts = (customOpts != null ? customOpts.locale : void 0) != null ? _mergeOpts({}, defaultOpts, customOpts) : _mergeOpts({}, dateRangePickerOptions, customOpts);
         _picker = null;
         _clear = function() {
           _picker.setStartDate();
@@ -204,6 +220,6 @@
         });
       }
     };
-  }]);
+  });
 
 }).call(this);

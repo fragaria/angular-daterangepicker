@@ -1,13 +1,28 @@
 picker = angular.module('daterangepicker', [])
 
-picker.constant('dateRangePickerConfig',
-  clearLabel: 'Clear'
-  locale:
-    separator: ' - '
-    format: 'YYYY-MM-DD'
-)
+picker.provider 'dateRangePickerOptions', ->
+  defaultOptions =
+    clearLabel: 'Clear'
+    locale:
+      separator: ' - '
+      format: 'YYYY-MM-DD'
 
-picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
+  DefaultOptions = (options) ->
+    defaultOptions = options
+
+  @setDefaultOptions = (options) ->
+    defaultOptions = options
+    return
+
+  @$get = [ ->
+    DefaultOptions defaultOptions
+  ]
+
+  # To prevent coffeescript from returing @$get
+  # return this.$get
+  @
+
+picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerOptions) ->
   require: 'ngModel'
   restrict: 'A'
   scope:
@@ -28,7 +43,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     el = $(element)
     customOpts = $scope.opts
-    opts = _mergeOpts({}, dateRangePickerConfig, customOpts)
+    defaultOpts = angular.copy dateRangePickerOptions
+    opts = if customOpts?.locale? then _mergeOpts({}, defaultOpts, customOpts) else
+      _mergeOpts({}, dateRangePickerOptions, customOpts)
     _picker = null
 
     _clear = ->
