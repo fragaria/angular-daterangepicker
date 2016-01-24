@@ -199,6 +199,15 @@
             }
           });
         }
+        $scope.$on('refresh-single-date-picker', function() {
+          if (!opts.singleDatePicker) {
+            return;
+          }
+          _setStartDate(modelCtrl.$modelValue);
+          _setEndDate(modelCtrl.$modelValue);
+          modelCtrl.$viewValue = modelCtrl.$modelValue.format(dateRangePickerConfig.locale.format);
+          return modelCtrl.$render();
+        });
         return $scope.$on('$destroy', function() {
           return _picker != null ? _picker.remove() : void 0;
         });

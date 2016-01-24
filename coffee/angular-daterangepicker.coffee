@@ -167,5 +167,12 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
             $scope.$apply () ->
               $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
 
+    $scope.$on 'refresh-single-date-picker', ->
+      return unless opts.singleDatePicker
+      _setStartDate(modelCtrl.$modelValue)
+      _setEndDate(modelCtrl.$modelValue)
+      modelCtrl.$viewValue = modelCtrl.$modelValue.format(dateRangePickerConfig.locale.format)
+      modelCtrl.$render()
+
     $scope.$on '$destroy', ->
       _picker?.remove()
