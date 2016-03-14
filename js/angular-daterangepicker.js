@@ -86,7 +86,7 @@
               return date.format(opts.locale.format);
             }
           };
-          if (opts.singleDatePicker && objValue) {
+          if (opts.singleDatePicker) {
             return f(objValue);
           } else if (objValue.startDate) {
             return [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator);
