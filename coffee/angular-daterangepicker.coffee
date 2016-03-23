@@ -110,11 +110,15 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # _init has to be called anytime we make changes to the date picker options
     _init = ->
-      # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
-      # update our $viewValue, which triggers the $parsers
-      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
+# disable autoUpdateInput, can't handle empty values without it.  Our callback here will
+# update our $viewValue, which triggers the $parsers
+      el.daterangepicker angular.extend(opts, {autoUpdateInput: false})
+
+      el.on 'apply.daterangepicker', (ev, picker) ->
         $scope.$apply () ->
-          $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
+          newStartDate = picker.startDate
+          newEndDate = picker.endDate
+          $scope.model = if opts.singleDatePicker then start else {startDate: newStartDate, endDate: newEndDate}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
