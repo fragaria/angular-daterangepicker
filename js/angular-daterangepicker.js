@@ -116,7 +116,7 @@
           };
           if (angular.isString(val) && val.length > 0) {
             if (opts.singleDatePicker) {
-              objValue = f(val);
+              objValue.startDate = f(val);
             } else {
               x = val.split(opts.locale.separator).map(f);
               objValue.startDate = x[0];
