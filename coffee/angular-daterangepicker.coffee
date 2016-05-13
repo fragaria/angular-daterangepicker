@@ -20,8 +20,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Custom angular extend function to extend locales, so they are merged instead of overwritten
     # angular.merge removes prototypes...
     _mergeOpts = () ->
-      localeExtend = angular.extend.apply(angular,
-        Array.prototype.slice.call(arguments).map((opt) -> opt?.locale).filter((opt) -> !!opt))
+      locales = Array.prototype.slice.call(arguments).map((opt) -> opt?.locale).filter((opt) -> !!opt)
+      locales.splice(0, 0, {})
+      localeExtend = angular.extend.apply(angular, locales)
       extend = angular.extend.apply(angular, arguments)
       extend.locale = localeExtend
       extend
