@@ -134,10 +134,17 @@
             autoUpdateInput: false
           }), function(start, end) {
             return $scope.$apply(function() {
-              return $scope.model = opts.singleDatePicker ? start : {
+              $scope.model = opts.singleDatePicker ? start : {
                 startDate: start,
                 endDate: end
               };
+              $scope.model = opts.singleDatePicker ? start : {
+                startDate: start,
+                endDate: end
+              };
+              modelCtrl.$valid = false;
+              modelCtrl.$modelValue = $scope.model;
+              return modelCtrl.$validate();
             });
           });
           _picker = el.data('daterangepicker');

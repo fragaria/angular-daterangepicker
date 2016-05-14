@@ -10,9 +10,6 @@
   "description": "Angular.js wrapper for Dan Grosmann's bootstrap date range picker (https://github.com/dangrossman/bootstrap-daterangepicker).",
   "license": "MIT",
   "private": false,
-  "dependencies": {
-    "bootstrap-daterangepicker": "1.3.23"
-  },
   "main": "index.js",
   "devDependencies": {
     "coffeelint": "^1.12.1",
@@ -24,5 +21,10 @@
     "grunt-ng-annotate": "^1.0.1",
     "grunt-wiredep": "^2.0.0",
     "load-grunt-tasks": "^3.3.0"
+  },
+  "scripts": {
+    "prestart": "bower install",
+    "start": "npm install",
+    "poststart": "grun dist"
   }
 }
