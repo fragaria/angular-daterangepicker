@@ -146,7 +146,7 @@
             results.push(el.on(eventType, function(e) {
               var eventName;
               eventName = e.type + '.' + e.namespace;
-              return $scope.$evalAsync(opts.eventHandlers[eventName]);
+              return $scope.$evalAsync(function() { return opts.eventHandlers[eventName](e, picker) });
             }));
           }
           return results;
