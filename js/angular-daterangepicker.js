@@ -139,6 +139,8 @@
                 endDate: end
               };
               modelCtrl.$valid = false;
+              modelCtrl.$modelValue = $scope.model;
+              modelCtrl.$validate();
               modelCtrl.$$rawModelValue = $scope.model;
               return modelCtrl.$validate();
             });

@@ -116,6 +116,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         $scope.$apply () ->
           $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
           modelCtrl.$valid = false
+          modelCtrl.$modelValue = $scope.model
+          modelCtrl.$validate()
           modelCtrl.$$rawModelValue = $scope.model
           modelCtrl.$validate()
 
