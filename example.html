@@ -131,7 +131,8 @@ exampleApp.controller('TestCtrl', function($scope) {
     // }, false);
 
     $scope.dateChanged = function(newDate) {
-      console.log('New date set: ', newDate);
+      console.log('New start date set: ', newDate.startDate.toString());
+      console.log('New end date set: ', newDate.endDate.toString());
     }
 
 });

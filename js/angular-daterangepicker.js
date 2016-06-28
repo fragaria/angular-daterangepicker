@@ -138,12 +138,8 @@
                 startDate: start,
                 endDate: end
               };
-              $scope.model = opts.singleDatePicker ? start : {
-                startDate: start,
-                endDate: end
-              };
               modelCtrl.$valid = false;
-              modelCtrl.$modelValue = $scope.model;
+              modelCtrl.$$rawModelValue = $scope.model;
               return modelCtrl.$validate();
             });
           });
