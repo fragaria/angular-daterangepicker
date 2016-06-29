@@ -134,15 +134,21 @@
             autoUpdateInput: false
           }), function(start, end) {
             return $scope.$apply(function() {
+              var formatters, idx, viewValue;
               $scope.model = opts.singleDatePicker ? start : {
                 startDate: start,
                 endDate: end
               };
-              modelCtrl.$valid = false;
+              formatters = modelCtrl.$formatters;
+              idx = formatters.length;
+              viewValue = $scope.model;
+              while (idx--) {
+                viewValue = formatters[idx](viewValue);
+              }
+              modelCtrl.$viewValue = modelCtrl.$$lastCommittedViewValue = viewValue;
               modelCtrl.$modelValue = $scope.model;
-              modelCtrl.$validate();
-              modelCtrl.$$rawModelValue = $scope.model;
-              return modelCtrl.$validate();
+              modelCtrl.$render();
+              return modelCtrl.$$writeModelToScope();
             });
           });
           _picker = el.data('daterangepicker');
