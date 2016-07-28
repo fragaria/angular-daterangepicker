@@ -32,8 +32,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _picker = null
 
     _clear = ->
-      _picker.setStartDate()
-      _picker.setEndDate()
+      _picker.startDate = null
+      _picker.endDate = null
 
     _setDatePoint = (setter) ->
       (newValue) ->
@@ -42,15 +42,15 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     _setStartDate = _setDatePoint (m) ->
       if (_picker.endDate < m)
-        _picker.setEndDate(m)
+        _picker.endDate = m
       opts.startDate = m
-      _picker.setStartDate(m)
+      _picker.startDate = m
 
     _setEndDate = _setDatePoint (m) ->
       if (_picker.startDate > m)
-        _picker.setStartDate(m)
+        _picker.startDate = m
       opts.endDate = m
-      _picker.setEndDate(m)
+      _picker.endDate = m
 
     # Validation for our min/max
     _validate = (validator) ->
