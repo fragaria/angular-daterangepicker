@@ -90,7 +90,7 @@
           };
           if (opts.singleDatePicker && objValue && objValue.startDate) {
             return f(objValue.startDate);
-          } else if (objValue && objValue.startDate) {
+          } else if (!opts.singleDatePicker && objValue && objValue.startDate) {
             return [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator);
           } else {
             return '';
@@ -134,7 +134,9 @@
             autoUpdateInput: false
           }), function(start, end) {
             return $scope.$apply(function() {
-              return $scope.model = opts.singleDatePicker ? start : {
+              return $scope.model = opts.singleDatePicker ? {
+                startDate: start
+              } : {
                 startDate: start,
                 endDate: end
               };
@@ -154,7 +156,9 @@
         _init();
         if (opts.singleDatePicker) {
           $scope.$watch('model', function(n) {
-            return _setStartDate(n);
+            if (n) {
+              return _setStartDate(n.startDate ? n.startDate : n);
+            }
           });
         } else {
           $scope.$watch('model.startDate', function(n) {
