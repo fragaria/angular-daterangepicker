@@ -134,7 +134,9 @@
             autoUpdateInput: false
           }), function(start, end) {
             return $scope.$apply(function() {
-              return $scope.model = opts.singleDatePicker ? start : {
+              return $scope.model = opts.singleDatePicker ? {
+                startDate: start
+              } : {
                 startDate: start,
                 endDate: end
               };
