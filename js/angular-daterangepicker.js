@@ -152,12 +152,18 @@
           return results;
         };
         _init();
-        $scope.$watch('model.startDate', function(n) {
-          return _setStartDate(n);
-        });
-        $scope.$watch('model.endDate', function(n) {
-          return _setEndDate(n);
-        });
+        if (opts.singleDatePicker) {
+          $scope.$watch('model', function(n) {
+            return _setStartDate(n);
+          });
+        } else {
+          $scope.$watch('model.startDate', function(n) {
+            return _setStartDate(n);
+          });
+          $scope.$watch('model.endDate', function(n) {
+            return _setEndDate(n);
+          });
+        }
         _initBoundaryField = function(field, validator, modelField, optName) {
           if (attrs[field]) {
             modelCtrl.$validators[field] = function(value) {
