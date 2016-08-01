@@ -70,8 +70,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         then moment(date).format(opts.locale.format)
         else date.format(opts.locale.format)
 
-      if opts.singleDatePicker and objValue
-        f(objValue)
+      if opts.singleDatePicker and objValue and objValue.startDate
+        f(objValue.startDate)
       else if objValue and objValue.startDate
         [f(objValue.startDate), f(objValue.endDate)].join(opts.locale.separator)
       else ''
@@ -114,7 +114,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # update our $viewValue, which triggers the $parsers
       el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
         $scope.$apply () ->
-          $scope.model = if opts.singleDatePicker then {startDate: start} else {startDate: start, endDate: end}
+          $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
