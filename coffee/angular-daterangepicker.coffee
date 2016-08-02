@@ -126,7 +126,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       for eventType of opts.eventHandlers
         el.on eventType, (e, picker) ->
           eventName = e.type + '.' + e.namespace
-          $scope.$evalAsync() ->
+          $scope.$evalAsync () ->
             $parse(opts.eventHandlers[eventName])(e, picker)
 
     _init()
