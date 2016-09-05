@@ -119,8 +119,8 @@
               objValue = f(val);
             } else {
               x = val.split(opts.locale.separator).map(f);
-              objValue.startDate = x[0];
-              objValue.endDate = x[1];
+              objValue.startDate = x[0].startOf("day");
+              objValue.endDate = x[1].endOf("day");
             }
           }
           return objValue;

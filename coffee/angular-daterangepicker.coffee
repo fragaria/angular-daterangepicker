@@ -100,8 +100,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           objValue = f(val)
         else
           x = val.split(opts.locale.separator).map(f)
-          objValue.startDate = x[0]
-          objValue.endDate = x[1]
+          # Use startOf/endOf day to comply with how bootstrap-daterangepicker works
+          objValue.startDate = x[0].startOf("day")
+          objValue.endDate = x[1].endOf("day")
       objValue
 
     modelCtrl.$isEmpty = (val) ->
