@@ -118,7 +118,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         $scope.$apply () ->
           newStartDate = picker.startDate
           newEndDate = picker.endDate
-          $scope.model = if opts.singleDatePicker then start else {startDate: newStartDate, endDate: newEndDate}
+          $scope.model = if opts.singleDatePicker then newStartDate else {startDate: newStartDate, endDate: newEndDate}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
