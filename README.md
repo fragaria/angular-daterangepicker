@@ -72,7 +72,7 @@ The date picker can be further customized by passing in the `options` attribute.
 
 ```
 <input date-range-picker class="form-control date-picker" type="text" ng-model="date"
-min="'2014-02-23'" max="'2015-02-25'" options="{separator: ":"}"/>
+min="'2014-02-23'" max="'2015-02-25'" options="{locale: {separator: ":"}}"/>
 ```
 
 Optionally, event handlers can be passed in through the `eventHandlers` attribute of `options`.
