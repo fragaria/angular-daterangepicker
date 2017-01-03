@@ -13,3 +13,7 @@ Many thanks to following folks (ordered by date of contribution):
 * [Marcelo Eduardo de Andrade Jr.](https://github.com/marcelinhov2)
 * [Elmar](https://github.com/elm-)
 * [Eric Byers](https://github.com/EricByers)
+* [Chris Parton](https://github.com/chrisparton1991)
+* [Dawid Dominiak](https://github.com/dawiddominiak)
+* [Lior Chen](https://github.com/liorch88)
+* [Hung Le](https://github.com/lexhung)
