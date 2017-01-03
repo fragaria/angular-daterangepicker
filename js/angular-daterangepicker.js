@@ -40,8 +40,8 @@
         opts = _mergeOpts({}, dateRangePickerConfig, customOpts);
         _picker = null;
         _clear = function() {
-          _picker.setStartDate();
-          return _picker.setEndDate();
+          _picker.startDate = null;
+          return _picker.endDate = null;
         };
         _setDatePoint = function(setter) {
           return function(newValue) {
@@ -52,17 +52,17 @@
         };
         _setStartDate = _setDatePoint(function(m) {
           if (_picker.endDate < m) {
-            _picker.setEndDate(m);
+            _picker.endDate = m;
           }
           opts.startDate = m;
-          return _picker.setStartDate(m);
+          return _picker.startDate = m;
         });
         _setEndDate = _setDatePoint(function(m) {
           if (_picker.startDate > m) {
-            _picker.setStartDate(m);
+            _picker.startDate = m;
           }
           opts.endDate = m;
-          return _picker.setEndDate(m);
+          return _picker.endDate = m;
         });
         _validate = function(validator) {
           return function(boundary, actual) {
