@@ -28,7 +28,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     el = $(element)
     customOpts = $scope.opts
-    opts = _mergeOpts({}, dateRangePickerConfig, customOpts)
+    opts = _mergeOpts({}, angular.copy(dateRangePickerConfig), customOpts)
     _picker = null
 
     _clear = ->
