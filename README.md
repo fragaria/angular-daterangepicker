@@ -79,6 +79,26 @@ The date picker can be further customized by passing in the `options` attribute.
 min="'2014-02-23'" max="'2015-02-25'" options="{locale: {separator: ":"}}"/>
 ```
 
+## Example options
+
+```
+$scope.options = {
+      locale: {
+        applyClass: 'btn-green',
+        applyLabel: "Apply",
+        fromLabel: "From",
+        format: "YYYY-MM-DD",
+        toLabel: "To",
+        cancelLabel: 'Cancel',
+        customRangeLabel: 'Custom range'
+      },
+      ranges: {
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()]
+      }
+    }
+```
+
 Optionally, event handlers can be passed in through the `eventHandlers` attribute of `options`.
 
 ```
