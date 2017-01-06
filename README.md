@@ -87,7 +87,9 @@ $scope.options = {
         applyClass: 'btn-green',
         applyLabel: "Apply",
         fromLabel: "From",
-        format: "YYYY-MM-DD",
+        format: "YYYY-MM-DD", //will give you 2017-01-06
+	//format: "D-MMM-YY", //will give you 6-Jan-17
+	//format: "D-MMMM-YY", //will give you 6-January-17
         toLabel: "To",
         cancelLabel: 'Cancel',
         customRangeLabel: 'Custom range'
