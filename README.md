@@ -83,8 +83,8 @@ min="'2014-02-23'" max="'2015-02-25'" options="{locale: {separator: ":"}}"/>
 
 ```
 $scope.options = {
+      applyClass: 'btn-green',
       locale: {
-        applyClass: 'btn-green',
         applyLabel: "Apply",
         fromLabel: "From",
         format: "YYYY-MM-DD", //will give you 2017-01-06
