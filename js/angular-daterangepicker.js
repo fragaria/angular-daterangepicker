@@ -11,7 +11,7 @@
     }
   });
 
-  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig','moment', function($compile, $timeout, $parse, dateRangePickerConfig,moment) {
     return {
       require: 'ngModel',
       restrict: 'A',
