@@ -1,5 +1,4 @@
 (function() {
-  console.log('dateRangePicker().main');
   var picker;
 
   picker = angular.module('daterangepicker', []);
