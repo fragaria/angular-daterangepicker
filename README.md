@@ -6,3 +6,5 @@ Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.c
 [DEMO](http://dave-k.github.io/angular-daterangepicker/)
 
 ![Date Range Picker screenshot](http://i.imgur.com/kEYML4O.png)
+
+See `example.html` for working demo.
