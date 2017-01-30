@@ -1,7 +1,7 @@
 # Custom Date Range Picker for Angular and Bootstrap
 ![Dependencies](https://david-dm.org/fragaria/angular-daterangepicker.png)
 
-Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
+Angular.js directive for [angular-daterangepicker](https://github.com/fragaria/angular-daterangepicker).
 
 [DEMO](http://dave-k.github.io/angular-daterangepicker/)
 
