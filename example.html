@@ -65,6 +65,12 @@
                         <span class="input-group-addon"><span class="glyphicon glyphicon-chevron-down"></span></span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="daterange6" class="control-label">Single picker</label>
+                    <input date-range-picker id="daterange6" name="daterangepicker6" class="form-control date-picker" type="text"
+                            ng-model="singleDate" options="{locale: {format: 'MMMM D, YYYY'}, singleDatePicker: true}" required />
+                </div>
                 <button type="button" class="btn" ng-click="setStartDate()">Set Start Date</button>
                 <button type="button" class="btn" ng-click="setRange()">Set Range</button>
             </form>
@@ -74,6 +80,7 @@
                 <div class="col-md-12 well">
                     {{date}}<br>
                     {{date2}}<br>
+                    {{singleDate}}<br>
                 </div>
             </div>
         </div>
@@ -93,6 +100,8 @@ exampleApp.controller('TestCtrl', function($scope) {
         startDate: moment().subtract(1, "days"),
         endDate: moment()
     };
+
+    $scope.singleDate = {};
 
     $scope.opts = {
         locale: {
