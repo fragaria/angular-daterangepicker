@@ -15,9 +15,9 @@
           jQuery.fn = {};
         }
       }
-      return module.exports = factory(require(moment, jQuery));
+      return module.exports = factory(require(moment), jQuery);
     } else {
-      return root.daterangepicker = factory(require('moment'), root.jQuery);
+      return root.daterangepicker = factory(root.moment, root.jQuery);
     }
   };
 

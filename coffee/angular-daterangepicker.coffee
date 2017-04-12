@@ -9,9 +9,9 @@ getdaterangepicker = (root, factory) ->
       jQuery = require('jquery')
       if not jQuery.fn
         jQuery.fn = {}
-    module.exports = factory(require(moment, jQuery))
+    module.exports = factory(require(moment), jQuery)
   else
-    root.daterangepicker = factory(require('moment'), root.jQuery)
+    root.daterangepicker = factory(root.moment, root.jQuery)
 gendaterangepicker = (moment, $) ->
   picker = angular.module('daterangepicker', [])
   picker.constant('dateRangePickerConfig',
