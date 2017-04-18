@@ -21,11 +21,5 @@
     "grunt-ng-annotate": "^1.0.1",
     "grunt-wiredep": "^2.0.0",
     "load-grunt-tasks": "^3.3.0"
-  },
-  "scripts": {
-    "postinstall": "bower install",
-    "prestart": "bower install",
-    "start": "npm install",
-    "poststart": "grunt dist"
   }
 }
