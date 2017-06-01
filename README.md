@@ -72,6 +72,14 @@ Min and max value can be set via additional attributes:
 <input date-range-picker class="form-control date-picker" type="text" ng-model="date" min="'2014-02-23'" max="'2015-02-25'"/>
 ```
 
+You can get notified when the user chooses new dates by providing a callback function:
+
+```
+<input date-range-picker class="form-control date-picker" type="text" ng-model="date" callback="customCallback(start, end, label)"/>
+```
+
+> It is called by Dan Grossmans's [Bootstrap Datepicker's callback function](http://www.daterangepicker.com/#usage), which is provided as constructor's parameter.
+
 The date picker can be further customized by passing in the `options` attribute.
 
 ```
