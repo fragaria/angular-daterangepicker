@@ -15,6 +15,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     max: '='
     model: '=ngModel'
     opts: '=options'
+    customCallback: '&callback'
     clearable: '='
   link: ($scope, element, attrs, modelCtrl) ->
     # Custom angular extend function to extend locales, so they are merged instead of overwritten
@@ -113,9 +114,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _init = ->
       # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
       # update our $viewValue, which triggers the $parsers
-      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
+      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end, label) ->
         $scope.$apply () ->
           $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
+          $scope.customCallback { start, end, label }
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
