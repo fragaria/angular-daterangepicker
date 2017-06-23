@@ -34,7 +34,7 @@ Assuming that bower installation directory is `bower_components`. In case of oth
 <script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
 
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
-<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css"/>
 ```
 
 Declare dependency:
