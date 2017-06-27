@@ -133,10 +133,14 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # Watchers enable resetting of start and end dates
     # Update the date picker, and set a new viewValue of the model
-    $scope.$watch 'model.startDate', (n) ->
-      _setStartDate(n)
-    $scope.$watch 'model.endDate', (n) ->
-      _setEndDate(n)
+    if opts.singleDatePicker
+      $scope.$watch 'model', (n) ->
+        _setStartDate(n)
+    else
+      $scope.$watch 'model.startDate', (n) ->
+        _setStartDate(n)
+      $scope.$watch 'model.endDate', (n) ->
+        _setEndDate(n)
 
     # Add validation/watchers for our min/max fields
     _initBoundaryField = (field, validator, modelField, optName) ->
