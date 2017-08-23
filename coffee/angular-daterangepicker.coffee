@@ -1,6 +1,8 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
+  # disable autoUpdateInput, can't handle empty values without it.
+  autoUpdateInput: false
   clearLabel: 'Clear'
   locale:
     separator: ' - '
@@ -111,9 +113,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     # _init has to be called anytime we make changes to the date picker options
     _init = ->
-      # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
-      # update our $viewValue, which triggers the $parsers
-      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
+      # Our callback here will update our $viewValue, which triggers the $parsers
+      el.daterangepicker opts, (start, end) ->
         $scope.$apply () ->
           $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
 
