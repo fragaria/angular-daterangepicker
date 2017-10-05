@@ -122,6 +122,15 @@ All event handlers from the Bootstrap daterangepicker are supported. For referen
 
 `cancel.daterangepicker`: Triggered when the cancel button is clicked
 
+## Show/hide programmatically
+
+You can show/hide the picker by emit some events in the scope. Example:
+
+```
+$scope.$broadcast('show.daterangepicker')
+$scope.$broadcast('hide.daterangepicker')
+```
+
 ## Compatibility
 Version > 0.2.0 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 2.0.0 and newer.
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
