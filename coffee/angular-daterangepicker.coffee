@@ -168,5 +168,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
             $scope.$apply () ->
               $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
 
+    # Listen for scope events
+    $scope.$on 'show.daterangepicker', () -> _picker.show()
+    $scope.$on 'hide.daterangepicker', () -> _picker.hide()
+
     $scope.$on '$destroy', ->
       _picker?.remove()
