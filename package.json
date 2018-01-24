@@ -2,12 +2,14 @@
   "name": "@GannettDigital/angular-daterangepicker",
   "version": "1.0.0",
   "license": "UNLICENSED",
-  "private": false,
+  "main": "index.js",
   "dependencies": {
+    "angular": "^1.2.17",
+    "bootstrap": "^3.0.0",
     "bootstrap-daterangepicker": "^2.0.0"
   },
-  "main": "index.js",
   "devDependencies": {
+    "angular-messages": "^1.2.17",
     "coffeelint": "^1.12.1",
     "grunt": "~0.4.1",
     "grunt-coffeelint": "^0.0.13",
