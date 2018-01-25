@@ -1,5 +1,5 @@
 {
-  "name": "@GannettDigital/angular-daterangepicker",
+  "name": "@gannett/angular-daterangepicker",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "main": "index.js",
