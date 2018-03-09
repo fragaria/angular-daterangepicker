@@ -47,7 +47,7 @@ Prepare model in your controller. The model **must** have `startDate` and `endDa
 
 ```
 exampleApp.controller('TestCtrl', function ($scope) {
-	$scope.datePicker.date = {startDate: null, endDate: null};
+	$scope.datePicker = { date: {startDate: null, endDate: null} };
 }
 ```
 
