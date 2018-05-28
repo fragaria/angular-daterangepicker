@@ -21,7 +21,8 @@
   "dependencies": {
     "angular": "^1.2.17",
     "bootstrap": "^3.0.0",
-    "bootstrap-daterangepicker": "^2.0.0"
+    "bootstrap-daterangepicker": "^3.0.3",
+    "moment": "^2.22.1"
   },
   "devDependencies": {
     "angular-messages": "^1.2.17"
