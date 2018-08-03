@@ -42,8 +42,14 @@ module.exports = (grunt) ->
         files:
           'js/angular-daterangepicker.js': ['js/angular-daterangepicker.js']
 
+    copy:
+      files:
+        cwd: 'js',
+        src: '**/*',
+        dest: 'docs/js',
+        expand: true
 
   # Default task(s).
   grunt.registerTask "default", ["coffeelint", "coffee"]
   grunt.registerTask "develop", ["default", "watch"]
-  grunt.registerTask "dist", ["default", "ngAnnotate", "uglify"]
+  grunt.registerTask "dist", ["default", "ngAnnotate", "uglify", "copy"]

@@ -14,15 +14,15 @@
 
 <body>
     <!-- bower:js -->
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.20/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.20/angular-messages.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.13/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular-messages.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.3/daterangepicker.min.js"></script>
     <!-- endbower -->
 
-    <script src="js/angular-daterangepicker.min.js"></script>
+    <script src="../js/angular-daterangepicker.min.js"></script>
 
 <div class="container">
     <h1>Daterange picker example</h1>
@@ -61,7 +61,7 @@
                     <input date-range-picker name="daterange5" id="daterange5" class="form-control date-picker" type="text"
                        ng-model="date" options="{locale: {format: 'MMMM D, YYYY'}}" required/>
                 </div>
-                <div class="form-grou">
+                <div class="form-group">
                     <button type="button" class="btn" ng-click="setStartDate()">Set Start Date to 4 days ago</button>
                     <button type="button" class="btn" ng-click="setRange()">Set Range to 4 days ago</button>
                 </div>
