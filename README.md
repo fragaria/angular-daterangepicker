@@ -3,6 +3,9 @@
 
 Angular.js directive for Dan Grossmans's [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker).
 
+** UPDATE **
+`bootstrap-daterangepicker` version 3 is now [daterangepicker](https://github.com/dangrossman/daterangepicker) (no longer has a bootstrap dependency)
+
 ## Maintainer needed!
 Hello, as you may noticed, we have troubles maintaining this repo. So if there is somebody willing to help merging PRs, testing and releasing, please contact me at lukas.marek(at)fragaria.cz.
 Thank you!

@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "angular": "^1.2.17",
-    "bootstrap": "^3.0.0",
-    "bootstrap-daterangepicker": "^2.0.0"
+    "daterangepicker": "^3.0.3"
   },
   "main": "index.js",
   "devDependencies": {
