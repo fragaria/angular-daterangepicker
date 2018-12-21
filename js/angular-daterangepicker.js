@@ -146,7 +146,7 @@
               if (!$scope.model) {
                 $scope.model = picker.startDate;
                 $timeout(function() {
-                  $scope.$apply();
+                  return $scope.$apply();
                 });
               }
             } else if (!$scope.model || !$scope.model.startDate || !$scope.model.endDate) {
@@ -155,7 +155,7 @@
                 endDate: picker.endDate
               };
               $timeout(function() {
-                $scope.$apply();
+                return $scope.$apply();
               });
             }
           });
