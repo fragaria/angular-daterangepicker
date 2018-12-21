@@ -119,8 +119,8 @@
               objValue = f(val);
             } else {
               x = val.split(opts.locale.separator).map(f);
-              objValue.startDate = x[0].startOf("day");
-              objValue.endDate = x[1].endOf("day");
+              objValue.startDate = x[0] ? x[0].startOf('day') : null;
+              objValue.endDate = x[1] ? x[1].endOf('day') : null;
             }
           }
           return objValue;
@@ -142,11 +142,21 @@
           });
           _picker = el.data('daterangepicker');
           el.on('apply.daterangepicker', function(e, picker) {
-            if ((!$scope.model || !$scope.model.startDate || !$scope.model.endDate) && !opts.singleDatePicker) {
+            if (opts.singleDatePicker) {
+              if (!$scope.model) {
+                $scope.model = picker.startDate;
+                $timeout(function() {
+                  $scope.$apply();
+                });
+              }
+            } else if (!$scope.model || !$scope.model.startDate || !$scope.model.endDate) {
               $scope.model = {
                 startDate: picker.startDate,
                 endDate: picker.endDate
               };
+              $timeout(function() {
+                $scope.$apply();
+              });
             }
           });
           results = [];
