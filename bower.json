@@ -1,6 +1,6 @@
 {
   "name": "angular-daterangepicker",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "homepage": "https://github.com/fragaria/angular-daterangepicker",
   "main": "js/angular-daterangepicker.js",
   "authors": [
@@ -20,18 +20,6 @@
   ],
   "dependencies": {
     "angular": "^1.2.17",
-    "bootstrap": "^3.0.0",
-    "bootstrap-daterangepicker": "^2.0.0"
-  },
-  "devDependencies": {
-    "angular-messages": "^1.2.17"
-  },
-  "overrides": {
-    "bootstrap": {
-      "main": [
-        "dist/css/bootstrap.css",
-        "dist/js/bootstrap.js"
-      ]
-    }
+    "bootstrap-daterangepicker": "^3.0.3"
   }
 }

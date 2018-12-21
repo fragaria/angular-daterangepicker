@@ -9,8 +9,7 @@ Thank you!
 
 [DEMO](http://fragaria.github.io/angular-daterangepicker/)
 
-**Beware: Use [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 2.0.0 and newer!
-Older version of datepicker are supported with 0.1.17 release**
+**Beware: Use [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) v 3.0.3 and newer!**
 
 ![Date Range Picker screenshot](http://i.imgur.com/zDjBqiS.png)
 
@@ -33,8 +32,7 @@ Assuming that bower installation directory is `bower_components`. In case of oth
 <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
 
-<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
-<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css"/>
 ```
 
 Declare dependency:
@@ -123,6 +121,7 @@ All event handlers from the Bootstrap daterangepicker are supported. For referen
 `cancel.daterangepicker`: Triggered when the cancel button is clicked
 
 ## Compatibility
+Version > 0.3.0 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 3.0.3 and newer.
 Version > 0.2.0 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 2.0.0 and newer.
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
 
