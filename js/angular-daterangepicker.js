@@ -18,6 +18,7 @@
       scope: {
         min: '=',
         max: '=',
+        picker: '=?',
         model: '=ngModel',
         opts: '=options',
         clearable: '='
@@ -142,6 +143,8 @@
             });
           });
           _picker = el.data('daterangepicker');
+          _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""));
+          $scope.picker = _picker;
           el.on('apply.daterangepicker', function(ev, picker) {
             if (opts.singleDatePicker) {
               if (!$scope.model) {

@@ -13,6 +13,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
   scope:
     min: '='
     max: '='
+    picker: '=?'
     model: '=ngModel'
     opts: '=options'
     clearable: '='
@@ -120,6 +121,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
       _picker = el.data('daterangepicker')
+      _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""))
+      $scope.picker = _picker
 
       el.on 'apply.daterangepicker', (ev, picker) ->
         if opts.singleDatePicker
