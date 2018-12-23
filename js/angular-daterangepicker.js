@@ -143,8 +143,9 @@
             });
           });
           _picker = el.data('daterangepicker');
-          _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""));
           $scope.picker = _picker;
+          _picker.container.hide();
+          _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""));
           el.on('apply.daterangepicker', function(ev, picker) {
             if (opts.singleDatePicker) {
               if (!$scope.model) {
@@ -156,7 +157,8 @@
             } else if (!$scope.model || !$scope.model.startDate || !$scope.model.endDate) {
               $scope.model = {
                 startDate: picker.startDate,
-                endDate: picker.endDate
+                endDate: picker.endDate,
+                label: picker.chosenLabel
               };
               $timeout(function() {
                 return $scope.$apply();

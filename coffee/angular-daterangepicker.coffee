@@ -121,8 +121,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
       _picker = el.data('daterangepicker')
-      _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""))
       $scope.picker = _picker
+      # to set initial dropdown to inline hide for when default display isn't hidden (eg display: flex/grid)
+      _picker.container.hide()
+      _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""))
 
       el.on 'apply.daterangepicker', (ev, picker) ->
         if opts.singleDatePicker
@@ -133,6 +135,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           $scope.model =
             startDate: picker.startDate
             endDate: picker.endDate
+            label: picker.chosenLabel
           $timeout -> $scope.$apply()
         return
 
