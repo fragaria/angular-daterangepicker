@@ -1,10 +1,10 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
-  clearLabel: 'Clear'
   locale:
-    separator: '-'
+    separator: ' - '
     format: 'YYYY-MM-DD'
+    clearLabel: 'Clear'
 )
 
 picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
@@ -113,15 +113,15 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     _init = ->
       # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
       # update our $viewValue, which triggers the $parsers
-      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (start, end) ->
+      el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (startDate, endDate, label) ->
         $scope.$apply () ->
-          $scope.model = if opts.singleDatePicker then start else {startDate: start, endDate: end}
+          $scope.model = if opts.singleDatePicker then startDate else {startDate, endDate, label}
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
       _picker = el.data('daterangepicker')
 
-      el.on 'apply.daterangepicker', (e, picker) ->
+      el.on 'apply.daterangepicker', (ev, picker) ->
         if opts.singleDatePicker
           if !$scope.model
             $scope.model = picker.startDate
@@ -137,8 +137,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # Revised
 
       for eventType of opts.eventHandlers
-        el.on eventType, (e) ->
-          eventName = e.type + '.' + e.namespace
+        el.on eventType, (ev, picker) ->
+          eventName = ev.type + '.' + ev.namespace
           $scope.$evalAsync(opts.eventHandlers[eventName])
 
     _init()
@@ -179,7 +179,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     if attrs.clearable
       $scope.$watch 'clearable', (newClearable) ->
         if newClearable
-          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.clearLabel}})
+          opts = _mergeOpts(opts, {locale: {cancelLabel: opts.locale.clearLabel}})
         _init()
         if newClearable
           el.on 'cancel.daterangepicker', () ->

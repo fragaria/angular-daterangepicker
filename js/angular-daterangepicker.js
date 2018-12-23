@@ -4,10 +4,10 @@
   picker = angular.module('daterangepicker', []);
 
   picker.constant('dateRangePickerConfig', {
-    clearLabel: 'Clear',
     locale: {
-      separator: '-',
-      format: 'YYYY-MM-DD'
+      separator: ' - ',
+      format: 'YYYY-MM-DD',
+      clearLabel: 'Clear'
     }
   });
 
@@ -132,16 +132,17 @@
           var eventType, results;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
-          }), function(start, end) {
+          }), function(startDate, endDate, label) {
             return $scope.$apply(function() {
-              return $scope.model = opts.singleDatePicker ? start : {
-                startDate: start,
-                endDate: end
+              return $scope.model = opts.singleDatePicker ? startDate : {
+                startDate: startDate,
+                endDate: endDate,
+                label: label
               };
             });
           });
           _picker = el.data('daterangepicker');
-          el.on('apply.daterangepicker', function(e, picker) {
+          el.on('apply.daterangepicker', function(ev, picker) {
             if (opts.singleDatePicker) {
               if (!$scope.model) {
                 $scope.model = picker.startDate;
@@ -161,9 +162,9 @@
           });
           results = [];
           for (eventType in opts.eventHandlers) {
-            results.push(el.on(eventType, function(e) {
+            results.push(el.on(eventType, function(ev, picker) {
               var eventName;
-              eventName = e.type + '.' + e.namespace;
+              eventName = ev.type + '.' + ev.namespace;
               return $scope.$evalAsync(opts.eventHandlers[eventName]);
             }));
           }
@@ -208,7 +209,7 @@
             if (newClearable) {
               opts = _mergeOpts(opts, {
                 locale: {
-                  cancelLabel: opts.clearLabel
+                  cancelLabel: opts.locale.clearLabel
                 }
               });
             }
