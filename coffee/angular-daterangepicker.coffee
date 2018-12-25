@@ -1,6 +1,7 @@
 picker = angular.module('daterangepicker', [])
 
 picker.constant('dateRangePickerConfig',
+  cancelOnOutsideClick: true
   locale:
     separator: ' - '
     format: 'YYYY-MM-DD'
@@ -101,8 +102,11 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           objValue = f(val)
         else
           x = val.split(opts.locale.separator).map(f)
-          # Use startOf/endOf day to comply with how bootstrap-daterangepicker works
+          # Use startOf/endOf day to comply with how daterangepicker works
           objValue.startDate = if x[0] then x[0].startOf('day') else null
+          # selected value will always be 999ms off due to:
+          # https://github.com/dangrossman/daterangepicker/issues/1890
+          # can fix by adding .startOf('second') but then initial value will be off by 999ms
           objValue.endDate = if x[1] then x[1].endOf('day') else null
       objValue
 
@@ -116,7 +120,13 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       # update our $viewValue, which triggers the $parsers
       el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (startDate, endDate, label) ->
         $scope.$apply () ->
-          $scope.model = if opts.singleDatePicker then startDate else {startDate, endDate, label}
+          # this callback is triggered any time the calendar is changed, even if it wasn't applied
+          # so a range is changed, but not applied and then clicked out of, this triggers when outsideClick calls hide
+          # so can't assign to model here
+          # https://github.com/dangrossman/daterangepicker/issues/1156
+          # $scope.model = if opts.singleDatePicker then startDate else {startDate, endDate, label}
+          if (typeof opts.changeCallback == "function")
+            opts.changeCallback.apply(this, arguments)
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
@@ -127,21 +137,31 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""))
 
       el.on 'apply.daterangepicker', (ev, picker) ->
-        if opts.singleDatePicker
-          if !$scope.model
-            $scope.model = picker.startDate
-            $timeout -> $scope.$apply()
-        else if !$scope.model or !$scope.model.startDate or !$scope.model.endDate
-          $scope.model =
-            startDate: picker.startDate
-            endDate: picker.endDate
-            label: picker.chosenLabel
-          $timeout -> $scope.$apply()
-        return
+        $scope.$apply ->
+          if opts.singleDatePicker
+            if !picker.startDate
+              $scope.model = null
+            else if !picker.startDate.isSame($scope.model)
+              $scope.model = picker.startDate
+          else if ( !picker.startDate.isSame(picker.oldStartDate) || !picker.endDate.isSame(picker.oldEndDate) ||
+                   !picker.startDate.isSame($scope.model.startDate) || !picker.endDate.isSame($scope.model.endDate)
+                   )
+            $scope.model = {
+              startDate: picker.startDate
+              endDate: picker.endDate
+              label: picker.chosenLabel
+            }
+          return
+
+      el.on 'outsideClick.daterangepicker', (ev, picker) ->
+        if opts.cancelOnOutsideClick
+          $scope.$apply ->
+            picker.clickCancel()
+        else
+          picker.clickApply()
 
       # Ability to attach event handlers. See https://github.com/fragaria/angular-daterangepicker/pull/62
       # Revised
-
       for eventType of opts.eventHandlers
         el.on eventType, (ev, picker) ->
           eventName = ev.type + '.' + ev.namespace

@@ -65,6 +65,21 @@ Do not forget to add a dot (.) in your model object to avoid [issues with scope 
 
 ## Advanced usage
 
+####**Extra Options**  
+These are options beyond those provided in daterangepicker.
+
+`pickerClasses` : **string**  
+-- additional classesadded to picker dropdown element
+
+`cancelOnOutsideClick` : **boolean**  (default: true)  <sup><sub>(only applicable when autoApply==false)</sub></sup>  
+If true, then clicking outside of the picker, after value has been changed on calendar,
+will trigger clicking cancel rather than applying value to model.
+If false, apply will be triggered.
+
+`changeCallback` : **function(startDate, endDate, label)**  
+This will be called in the second $.daterangepicker callback parameter
+
+
 ####**Optional Attributes**
 
 `picker` : **object**  
@@ -154,6 +169,11 @@ All event handlers from the Bootstrap daterangepicker are supported. For referen
 Version > 0.3.0 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 3.0.3 and newer.
 Version > 0.2.0 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 2.0.0 and newer.
 Version > 0.1.1 requires [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker) 1.3.3 and newer.
+
+## Changes of note
+####0.3.0
+`cancelOnOutsideClick` - enabled by default, was previously unhandled
+
 
 ## Links
 See [original documentation](https://github.com/dangrossman/bootstrap-daterangepicker).

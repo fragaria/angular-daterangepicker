@@ -4,6 +4,7 @@
   picker = angular.module('daterangepicker', []);
 
   picker.constant('dateRangePickerConfig', {
+    cancelOnOutsideClick: true,
     locale: {
       separator: ' - ',
       format: 'YYYY-MM-DD',
@@ -135,11 +136,9 @@
             autoUpdateInput: false
           }), function(startDate, endDate, label) {
             return $scope.$apply(function() {
-              return $scope.model = opts.singleDatePicker ? startDate : {
-                startDate: startDate,
-                endDate: endDate,
-                label: label
-              };
+              if (typeof opts.changeCallback === "function") {
+                return opts.changeCallback.apply(this, arguments);
+              }
             });
           });
           _picker = el.data('daterangepicker');
@@ -147,22 +146,29 @@
           _picker.container.hide();
           _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""));
           el.on('apply.daterangepicker', function(ev, picker) {
-            if (opts.singleDatePicker) {
-              if (!$scope.model) {
-                $scope.model = picker.startDate;
-                $timeout(function() {
-                  return $scope.$apply();
-                });
+            return $scope.$apply(function() {
+              if (opts.singleDatePicker) {
+                if (!picker.startDate) {
+                  $scope.model = null;
+                } else if (!picker.startDate.isSame($scope.model)) {
+                  $scope.model = picker.startDate;
+                }
+              } else if (!picker.startDate.isSame(picker.oldStartDate) || !picker.endDate.isSame(picker.oldEndDate) || !picker.startDate.isSame($scope.model.startDate) || !picker.endDate.isSame($scope.model.endDate)) {
+                $scope.model = {
+                  startDate: picker.startDate,
+                  endDate: picker.endDate,
+                  label: picker.chosenLabel
+                };
               }
-            } else if (!$scope.model || !$scope.model.startDate || !$scope.model.endDate) {
-              $scope.model = {
-                startDate: picker.startDate,
-                endDate: picker.endDate,
-                label: picker.chosenLabel
-              };
-              $timeout(function() {
-                return $scope.$apply();
+            });
+          });
+          el.on('outsideClick.daterangepicker', function(ev, picker) {
+            if (opts.cancelOnOutsideClick) {
+              return $scope.$apply(function() {
+                return picker.clickCancel();
               });
+            } else {
+              return picker.clickApply();
             }
           });
           results = [];
