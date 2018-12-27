@@ -9,6 +9,26 @@
     <link rel="stylesheet" href="lib/bootstrap-daterangepicker/daterangepicker.css" />
     <!-- endbower -->
 
+    <style type="text/css">
+        label {
+            display: inline-block;
+            min-width: 200px;
+        }
+        form input, form button {
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+            margin: 10px;
+        }
+        .daterangepicker.fancy-border {
+            border: 2px solid red;
+            box-shadow: 0 4px 15px 0px #888888;
+        }
+        .daterangepicker.fancy-border:before {
+            border-bottom: 5px solid red;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -31,37 +51,68 @@
                 <div class="form-group">
                     <label for="daterange1" class="control-label">Simple picker</label>
                     <input date-range-picker id="daterange1" name="daterange1" class="form-control date-picker" type="text"
-                           ng-model="date" required/>
+                           ng-model="date"
+                           ng-model-options="{ updateOn: 'change' }"
+                           required/>
+                    <div><label>date:</label> {{date}}</div>
+                    <br/>
                 </div>
                 <div class="form-group" ng-class="{'has-error': dateForm.daterange2.$invalid}">
                     <label for="daterange2" class="control-label">Picker with min and max date</label>
                     <input date-range-picker id="daterange2" name="daterange2" class="form-control date-picker" type="text"
-                           min="'2015-01-23'" max="'2015-08-25'" ng-model="date"
+                           ng-model="dateLimited"
+                           min="'2018-11-23'" max="'2019-08-25'"
                            required/>
                     <div class="help-block" ng-messages="dateForm.daterange2.$error">
                         <p ng-message="min">Start date is too far in the past.</p>
                         <p ng-message="max">End date is too far in the future.</p>
                         <p ng-message="required">Range is required.</p>
                     </div>
+                    <div><label>dateLimited:</label> {{dateLimited}}</div>
+                    <br>
                 </div>
                 <div class="form-group">
-                    <label for="daterange3" class="control-label">Picker with custom locale</label>
+                    <label for="daterange3" class="control-label">Picker with custom locale <br/> & extra picker class</label>
                     <input date-range-picker id="daterange3" name="daterange3" class="form-control date-picker" type="text"
-                           ng-model="date" options="opts" required/>
+                           ng-model="date2"
+                           options="opts" required/>
+                    <div><label>date2:</label> {{date2}}</div>
+                    <br>
                 </div>
                 <div class="form-group">
                     <label for="daterange4" class="control-label">Clearable picker</label>
                     <input date-range-picker id="daterange4" name="daterange4" class="form-control date-picker" type="text"
-                           ng-model="date" clearable="true" required/>
+                           ng-model="date2"
+                           clearable="true" required/>
+                    <div><label>date2:</label> {{date2}}</div>
+                    <br>
                 </div>
                 <div class="form-group">
-                    <label for="daterange5" class="control-label">Picker with custom format</label>
-                    <div class="input-group col-md-6" id="daterange5">
+                    <label for="daterangeA" class="control-label">Unlinked calendars</label>
+                    <input date-range-picker id="daterangeA" name="daterange4" class="form-control date-picker" type="text"
+                           ng-model="date2"
+                           options="optsUnlinked" required/>
+                    <div><label>date2:</label> {{date2}}</div>
+                    <br>
+                </div>
+                <div class="form-group">
+                    <label for="daterangeB" class="control-label">Single picker</label>
+                    <input date-range-picker id="daterangeB" name="daterange4" class="form-control date-picker" type="text"
+                           ng-model="dateSingle"
+                           options="optsSingle" required/>
+                    <div><label>dateSingle:</label> {{dateSingle}}</div>
+                    <br>
+                </div>
+                <div class="form-group">
+                    <label for="daterange5" class="control-label">Picker with custom format & apply <br/> when clicking out of calendar</label>
+                    <span class="input-group col-md-6" id="daterange5">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         <input date-range-picker name="daterange5" class="form-control date-picker" type="text"
-                           ng-model="date2" options="{locale: {format: 'MMMM D, YYYY'}}" required/>
+                           ng-model="dateFormatted" options="{cancelOnOutsideClick: false, locale: {format: 'MMMM D, YYYY'}}" required/>
                         <span class="input-group-addon"><span class="glyphicon glyphicon-chevron-down"></span></span>
-                    </div>
+                    </span>
+                    <div><label>dateFormatted:</label> {{dateFormatted}}</div>
+                    <br>
                 </div>
                 <button type="button" class="btn" ng-click="setStartDate()">Set Start Date</button>
                 <button type="button" class="btn" ng-click="setRange()">Set Range</button>
@@ -70,8 +121,8 @@
             <div class="row">
                 <h4>Dates:</h4>
                 <div class="col-md-12 well">
-                    {{date}}<br>
-                    {{date2}}<br>
+                    date1: {{date}}<br>
+                    date2: {{date2}}<br>
                 </div>
             </div>
         </div>
@@ -91,8 +142,14 @@ exampleApp.controller('TestCtrl', function($scope) {
         startDate: moment().subtract(1, "days"),
         endDate: moment()
     };
+    $scope.dateLimited = {
+        startDate: moment().subtract(1, "days"),
+        endDate: moment()
+    };
+    $scope.dateSingle = moment();
 
     $scope.opts = {
+        pickerClasses: 'fancy-border',
         locale: {
             applyClass: 'btn-green',
             applyLabel: "Použít",
@@ -111,6 +168,13 @@ exampleApp.controller('TestCtrl', function($scope) {
             'Last 30 Days': [moment().subtract(29, 'days'), moment()]
         }
     };
+    $scope.optsUnlinked = {
+        linkedCalendars: false
+    };
+    $scope.optsSingle = {
+        singleDatePicker: true,
+        ranges: $scope.opts.ranges
+    };
 
     $scope.setStartDate = function () {
         $scope.date.startDate = moment().subtract(4, "days");
@@ -121,6 +185,10 @@ exampleApp.controller('TestCtrl', function($scope) {
             startDate: moment().subtract(5, "days"),
             endDate: moment()
         };
+    };
+
+    $scope.modelOptions = {
+        // updateOn: ""
     };
 
     //Watch for date changes
