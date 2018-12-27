@@ -25,7 +25,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validate, _validateMax, _validateMin, customOpts, el, getViewValue, opts;
+        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validate, _validateMax, _validateMin, customOpts, el, getViewValue, opts, setModelOptions;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -40,6 +40,27 @@
         el = $(element);
         el.attr('ng-trim', 'false');
         attrs.ngTrim = 'false';
+        (setModelOptions = function() {
+          var options, updateOn;
+          if (modelCtrl.$options && typeof modelCtrl.$options.getOption === 'function') {
+            updateOn = modelCtrl.$options.getOption('updateOn');
+          } else {
+            updateOn = (modelCtrl.$options && modelCtrl.$options.updateOn) || "";
+          }
+          if (!updateOn.includes("change")) {
+            if (typeof modelCtrl.$overrideModelOptions === 'function') {
+              updateOn += " change";
+              return modelCtrl.$overrideModelOptions({
+                updateOn: updateOn
+              });
+            } else {
+              updateOn += " default change";
+              options = angular.copy(modelCtrl.$options) || {};
+              options.updateOn = updateOn;
+              return modelCtrl.$options = options;
+            }
+          }
+        })();
         customOpts = $scope.opts;
         opts = _mergeOpts({}, angular.copy(dateRangePickerConfig), customOpts);
         _picker = null;
@@ -63,15 +84,19 @@
           if (date && _picker.endDate < date) {
             _picker.setEndDate(date);
           }
-          opts.startDate = date;
-          return _picker.setStartDate(date);
+          _picker.setStartDate(date);
+          return opts.startDate = date;
         });
         _setEndDate = _setDatePoint(function(date) {
           if (date && _picker.startDate > date) {
+            _picker.setEndDate(_picker.startDate);
+            opts.endDate = _picker.endDate;
             _picker.setStartDate(date);
+            return opts.startDate = date;
+          } else {
+            opts.endDate = date;
+            return _picker.setEndDate(date);
           }
-          opts.endDate = date;
-          return _picker.setEndDate(date);
         });
         _validate = function(validator) {
           return function(boundary, actual) {
@@ -171,10 +196,10 @@
                   _setEndDate($scope.model);
                 }
               } else {
-                if (!picker.startDate.isSame($scope.model.startDate)) {
+                if ($scope.model && !picker.startDate.isSame($scope.model.startDate)) {
                   _setStartDate($scope.model.startDate);
                 }
-                if (!picker.endDate.isSame($scope.model.endDate)) {
+                if ($scope.model && !picker.endDate.isSame($scope.model.endDate)) {
                   _setEndDate($scope.model.endDate);
                 }
               }
@@ -189,7 +214,7 @@
                 } else if (!picker.startDate.isSame($scope.model)) {
                   $scope.model = picker.startDate;
                 }
-              } else if (!picker.startDate.isSame(picker.oldStartDate) || !picker.endDate.isSame(picker.oldEndDate) || !picker.startDate.isSame($scope.model.startDate) || !picker.endDate.isSame($scope.model.endDate)) {
+              } else if (!picker.startDate.isSame(picker.oldStartDate) || !picker.endDate.isSame(picker.oldEndDate) || !$scope.model || !picker.startDate.isSame($scope.model.startDate) || !picker.endDate.isSame($scope.model.endDate)) {
                 $scope.model = {
                   startDate: picker.startDate,
                   endDate: picker.endDate,

@@ -33,6 +33,24 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     el.attr('ng-trim','false')
     attrs.ngTrim = 'false'
 
+    do setModelOptions = ->
+      # otherwise in the middle of typing it will update the $viewValue
+      if (modelCtrl.$options && typeof modelCtrl.$options.getOption == 'function')
+        updateOn = modelCtrl.$options.getOption('updateOn')
+      else # angular < 1.6
+        updateOn = (modelCtrl.$options && modelCtrl.$options.updateOn) || ""
+
+      if (!updateOn.includes("change"))
+        if (typeof modelCtrl.$overrideModelOptions == 'function')
+          updateOn += " change"
+          modelCtrl.$overrideModelOptions({updateOn})
+        else
+          # angular < 1.6
+          updateOn += " default change"
+          options = angular.copy(modelCtrl.$options) || {}
+          options.updateOn = updateOn
+          modelCtrl.$options = options
+
     customOpts = $scope.opts
     opts = _mergeOpts({}, angular.copy(dateRangePickerConfig), customOpts)
     _picker = null
@@ -55,15 +73,25 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
     _setStartDate = _setDatePoint (date) ->
       if (date && _picker.endDate < date)
+        # end's before start, so push end date out to start date
         _picker.setEndDate(date)
-      opts.startDate = date
       _picker.setStartDate(date)
+      opts.startDate = date
 
     _setEndDate = _setDatePoint (date) ->
+      # this just flips start and end if they are reverse chronological
       if (date && _picker.startDate > date)
+        # daterangepicker will set the end date to a clone of the start date if it's before start
+        # so end will become what the start date is currently anyway
+        _picker.setEndDate(_picker.startDate)
+        opts.endDate = _picker.endDate #will be previous start date
+
+        # the new start date is actually this lesser date
         _picker.setStartDate(date)
-      opts.endDate = date
-      _picker.setEndDate(date)
+        opts.startDate = date
+      else
+        opts.endDate = date
+        _picker.setEndDate(date)
 
     # Validation for our min/max
     _validate = (validator) ->
@@ -169,9 +197,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
               _setStartDate($scope.model)
               _setEndDate($scope.model)
           else
-            if (!picker.startDate.isSame($scope.model.startDate))
+            if ($scope.model && !picker.startDate.isSame($scope.model.startDate))
               _setStartDate($scope.model.startDate)
-            if (!picker.endDate.isSame($scope.model.endDate))
+            if ($scope.model && !picker.endDate.isSame($scope.model.endDate))
               _setEndDate($scope.model.endDate)
           picker.updateView()
           return
@@ -184,6 +212,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
             else if !picker.startDate.isSame($scope.model)
               $scope.model = picker.startDate
           else if ( !picker.startDate.isSame(picker.oldStartDate) || !picker.endDate.isSame(picker.oldEndDate) ||
+                   !$scope.model ||
                    !picker.startDate.isSame($scope.model.startDate) || !picker.endDate.isSame($scope.model.endDate)
                    )
             $scope.model = {
