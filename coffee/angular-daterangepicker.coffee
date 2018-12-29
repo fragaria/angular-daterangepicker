@@ -33,17 +33,20 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     el.attr('ng-trim','false')
     attrs.ngTrim = 'false'
 
+    allowInvalid = false
     do setModelOptions = ->
       # must only update on change, otherwise in the middle of typing it will update the $viewValue
       if (modelCtrl.$options && typeof modelCtrl.$options.getOption == 'function')
         updateOn = modelCtrl.$options.getOption('updateOn')
+        allowInvalid = !!modelCtrl.$options.getOption('allowInvalid')
       else # angular < 1.6
         updateOn = (modelCtrl.$options && modelCtrl.$options.updateOn) || ""
+        allowInvalid = !!(modelCtrl.$options && modelCtrl.$options.allowInvalid)
 
       if (!updateOn.includes("change"))
         if (typeof modelCtrl.$overrideModelOptions == 'function')
           updateOn += " change"
-          modelCtrl.$overrideModelOptions({updateOn})
+          modelCtrl.$overrideModelOptions({'*':'$inherit', updateOn})
         else
           # angular < 1.6
           updateOn += " change"
@@ -257,8 +260,14 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 #          modelCtrl.$render()
 
     $scope.$watch (-> getViewValue($scope.model)) , (viewValue) ->
+#      if (modelCtrl.$invalid)
+#        modelCtrl.$viewValue = null
       if (typeof modelCtrl.$processModelValue == "function")
         modelCtrl.$processModelValue()
+        # will skip render if view wasn't updated, but view is skipped
+        # the first time after a validation error since it's still $invalid
+        # so need to make sure it's run again just in case
+        modelCtrl.$render()
       else
         # maintain angular compatibility with < 1.7
         if (typeof modelCtrl.$$updateEmptyClasses == "function")

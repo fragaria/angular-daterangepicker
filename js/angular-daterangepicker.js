@@ -25,7 +25,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validateRange, customOpts, el, getViewValue, opts, setModelOptions;
+        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validateRange, allowInvalid, customOpts, el, getViewValue, opts, setModelOptions;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -40,17 +40,21 @@
         el = $(element);
         el.attr('ng-trim', 'false');
         attrs.ngTrim = 'false';
+        allowInvalid = false;
         (setModelOptions = function() {
           var options, updateOn;
           if (modelCtrl.$options && typeof modelCtrl.$options.getOption === 'function') {
             updateOn = modelCtrl.$options.getOption('updateOn');
+            allowInvalid = !!modelCtrl.$options.getOption('allowInvalid');
           } else {
             updateOn = (modelCtrl.$options && modelCtrl.$options.updateOn) || "";
+            allowInvalid = !!(modelCtrl.$options && modelCtrl.$options.allowInvalid);
           }
           if (!updateOn.includes("change")) {
             if (typeof modelCtrl.$overrideModelOptions === 'function') {
               updateOn += " change";
               return modelCtrl.$overrideModelOptions({
+                '*': '$inherit',
                 updateOn: updateOn
               });
             } else {
@@ -236,7 +240,8 @@
           return getViewValue($scope.model);
         }), function(viewValue) {
           if (typeof modelCtrl.$processModelValue === "function") {
-            return modelCtrl.$processModelValue();
+            modelCtrl.$processModelValue();
+            return modelCtrl.$render();
           } else {
             if (typeof modelCtrl.$$updateEmptyClasses === "function") {
               modelCtrl.$$updateEmptyClasses(viewValue);
