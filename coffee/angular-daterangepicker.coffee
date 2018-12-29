@@ -34,7 +34,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     attrs.ngTrim = 'false'
 
     do setModelOptions = ->
-      # otherwise in the middle of typing it will update the $viewValue
+      # must only update on change, otherwise in the middle of typing it will update the $viewValue
       if (modelCtrl.$options && typeof modelCtrl.$options.getOption == 'function')
         updateOn = modelCtrl.$options.getOption('updateOn')
       else # angular < 1.6
@@ -46,9 +46,11 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           modelCtrl.$overrideModelOptions({updateOn})
         else
           # angular < 1.6
-          updateOn += " default change"
+          updateOn += " change"
+          updateOn.replace(/default/g,' ')
           options = angular.copy(modelCtrl.$options) || {}
           options.updateOn = updateOn
+          options.updateOnDefault = false
           modelCtrl.$options = options
 
     customOpts = $scope.opts
@@ -76,7 +78,7 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         # end's before start, so push end date out to start date
         _picker.setEndDate(date)
       _picker.setStartDate(date)
-      opts.startDate = date
+      opts.startDate = _picker.startDate #picker would have adjusted it to match max/mins
 
     _setEndDate = _setDatePoint (date) ->
       # this just flips start and end if they are reverse chronological
@@ -88,20 +90,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
 
         # the new start date is actually this lesser date
         _picker.setStartDate(date)
-        opts.startDate = date
+        opts.startDate = _picker.startDate #picker would have adjusted it to match max/mins
       else
-        opts.endDate = date
         _picker.setEndDate(date)
-
-    # Validation for our min/max
-    _validate = (validator) ->
-      (boundary, actual) ->
-        if boundary and actual
-        then validator(moment(boundary), moment(actual))
-        else true
-
-    _validateMin = _validate (min, start) -> min.isBefore(start) or min.isSame(start, 'day')
-    _validateMax = _validate (max, end) -> max.isAfter(end) or max.isSame(end, 'day')
+        opts.endDate = _picker.endDate
 
     getViewValue =(model) ->
       f = (date) ->
@@ -134,8 +126,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         _setStartDate(modelCtrl.$modelValue.startDate)
         _setEndDate(modelCtrl.$modelValue.endDate)
       else _clear()
-      # Update the input with the $viewValue (generated from $formatters)
-      modelCtrl.$renderOriginal()
+
+      if (modelCtrl.$valid)
+        # Update the input with the $viewValue (generated from $formatters)
+        modelCtrl.$renderOriginal()
 
     # This should parse the string input into an updated model object
     modelCtrl.$parsers.push (viewValue) ->
@@ -274,17 +268,40 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         modelCtrl.$render()
 
 
+    # Validation for our min/max
+    _validateRange = (date, min, max) ->
+      if date and (min or max)
+        [date, min, max] = [date, min, max].map (d) -> moment(d)
+        return (min.isBefore(date) or min.isSame(date, 'day')) and (max.isSame(date, 'day') or max.isAfter(date))
+      else true
+
+    modelCtrl.$validators['invalid'] =(value, viewValue) ->
+      applicable = attrs.required && !modelCtrl.$isEmpty(viewValue)
+      if opts.singleDatePicker
+        check = value && value.isValid()
+      else
+        check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid()
+      return !applicable || !!check
+
     # Add validation/watchers for our min/max fields
     _initBoundaryField = (field, validator, modelField, optName) ->
-      if attrs[field]
+      if attrs[field] || opts[optName]
         modelCtrl.$validators[field] = (value) ->
-          value and validator(opts[optName], value[modelField])
-        $scope.$watch field, (date) ->
-          opts[optName] = if date then moment(date) else false
-          _init()
+          if (opts.singleDatePicker)
+            if field == 'min'
+              value and validator(value, opts['minDate'], value)
+            else if field == 'max'
+              value and validator(value, value, opts['maxDate'])
+          else
+            value and validator(value[modelField], opts['minDate'], opts['maxDate'])
 
-    _initBoundaryField('min', _validateMin, 'startDate', 'minDate')
-    _initBoundaryField('max', _validateMax, 'endDate', 'maxDate')
+        if attrs[field]
+          $scope.$watch field, (date) ->
+            opts[optName] = if date then moment(date) else false
+            _init()
+
+    _initBoundaryField('min', _validateRange, 'startDate', 'minDate')
+    _initBoundaryField('max', _validateRange, 'endDate', 'maxDate')
 
     # Watch our options
     if attrs.options
@@ -301,8 +318,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         _init()
         if newClearable
           el.on 'cancel.daterangepicker', () ->
-            $scope.$apply () ->
-              $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+            $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+            $timeout -> $scope.$apply()
 
     $scope.$on '$destroy', ->
       _picker?.remove()

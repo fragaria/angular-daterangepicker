@@ -25,7 +25,7 @@
         clearable: '='
       },
       link: function($scope, element, attrs, modelCtrl) {
-        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validate, _validateMax, _validateMin, customOpts, el, getViewValue, opts, setModelOptions;
+        var _clear, _init, _initBoundaryField, _mergeOpts, _picker, _setDatePoint, _setEndDate, _setStartDate, _validateRange, customOpts, el, getViewValue, opts, setModelOptions;
         _mergeOpts = function() {
           var extend, localeExtend;
           localeExtend = angular.extend.apply(angular, Array.prototype.slice.call(arguments).map(function(opt) {
@@ -54,9 +54,11 @@
                 updateOn: updateOn
               });
             } else {
-              updateOn += " default change";
+              updateOn += " change";
+              updateOn.replace(/default/g, ' ');
               options = angular.copy(modelCtrl.$options) || {};
               options.updateOn = updateOn;
+              options.updateOnDefault = false;
               return modelCtrl.$options = options;
             }
           }
@@ -85,33 +87,18 @@
             _picker.setEndDate(date);
           }
           _picker.setStartDate(date);
-          return opts.startDate = date;
+          return opts.startDate = _picker.startDate;
         });
         _setEndDate = _setDatePoint(function(date) {
           if (date && _picker.startDate > date) {
             _picker.setEndDate(_picker.startDate);
             opts.endDate = _picker.endDate;
             _picker.setStartDate(date);
-            return opts.startDate = date;
+            return opts.startDate = _picker.startDate;
           } else {
-            opts.endDate = date;
-            return _picker.setEndDate(date);
+            _picker.setEndDate(date);
+            return opts.endDate = _picker.endDate;
           }
-        });
-        _validate = function(validator) {
-          return function(boundary, actual) {
-            if (boundary && actual) {
-              return validator(moment(boundary), moment(actual));
-            } else {
-              return true;
-            }
-          };
-        };
-        _validateMin = _validate(function(min, start) {
-          return min.isBefore(start) || min.isSame(start, 'day');
-        });
-        _validateMax = _validate(function(max, end) {
-          return max.isAfter(end) || max.isSame(end, 'day');
         });
         getViewValue = function(model) {
           var f, viewValue;
@@ -146,7 +133,9 @@
           } else {
             _clear();
           }
-          return modelCtrl.$renderOriginal();
+          if (modelCtrl.$valid) {
+            return modelCtrl.$renderOriginal();
+          }
         };
         modelCtrl.$parsers.push(function(viewValue) {
           var f, objValue, x;
@@ -256,19 +245,50 @@
             return modelCtrl.$render();
           }
         });
-        _initBoundaryField = function(field, validator, modelField, optName) {
-          if (attrs[field]) {
-            modelCtrl.$validators[field] = function(value) {
-              return value && validator(opts[optName], value[modelField]);
-            };
-            return $scope.$watch(field, function(date) {
-              opts[optName] = date ? moment(date) : false;
-              return _init();
-            });
+        _validateRange = function(date, min, max) {
+          var ref;
+          if (date && (min || max)) {
+            ref = [date, min, max].map(function(d) {
+              return moment(d);
+            }), date = ref[0], min = ref[1], max = ref[2];
+            return (min.isBefore(date) || min.isSame(date, 'day')) && (max.isSame(date, 'day') || max.isAfter(date));
+          } else {
+            return true;
           }
         };
-        _initBoundaryField('min', _validateMin, 'startDate', 'minDate');
-        _initBoundaryField('max', _validateMax, 'endDate', 'maxDate');
+        modelCtrl.$validators['invalid'] = function(value, viewValue) {
+          var applicable, check;
+          applicable = attrs.required && !modelCtrl.$isEmpty(viewValue);
+          if (opts.singleDatePicker) {
+            check = value && value.isValid();
+          } else {
+            check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid();
+          }
+          return !applicable || !!check;
+        };
+        _initBoundaryField = function(field, validator, modelField, optName) {
+          if (attrs[field] || opts[optName]) {
+            modelCtrl.$validators[field] = function(value) {
+              if (opts.singleDatePicker) {
+                if (field === 'min') {
+                  return value && validator(value, opts['minDate'], value);
+                } else if (field === 'max') {
+                  return value && validator(value, value, opts['maxDate']);
+                }
+              } else {
+                return value && validator(value[modelField], opts['minDate'], opts['maxDate']);
+              }
+            };
+            if (attrs[field]) {
+              return $scope.$watch(field, function(date) {
+                opts[optName] = date ? moment(date) : false;
+                return _init();
+              });
+            }
+          }
+        };
+        _initBoundaryField('min', _validateRange, 'startDate', 'minDate');
+        _initBoundaryField('max', _validateRange, 'endDate', 'maxDate');
         if (attrs.options) {
           $scope.$watch('opts', function(newOpts) {
             opts = _mergeOpts(opts, newOpts);
@@ -287,11 +307,12 @@
             _init();
             if (newClearable) {
               return el.on('cancel.daterangepicker', function() {
-                return $scope.$apply(function() {
-                  return $scope.model = opts.singleDatePicker ? null : {
-                    startDate: null,
-                    endDate: null
-                  };
+                $scope.model = opts.singleDatePicker ? null : {
+                  startDate: null,
+                  endDate: null
+                };
+                return $timeout(function() {
+                  return $scope.$apply();
                 });
               });
             }
