@@ -1,9 +1,9 @@
 (function() {
-  var picker;
+  var pickerModule;
 
-  picker = angular.module('daterangepicker', []);
+  pickerModule = angular.module('daterangepicker', []);
 
-  picker.constant('dateRangePickerConfig', {
+  pickerModule.constant('dateRangePickerConfig', {
     cancelOnOutsideClick: true,
     locale: {
       separator: ' - ',
@@ -12,7 +12,7 @@
     }
   });
 
-  picker.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  pickerModule.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -219,6 +219,7 @@
           el.on('outsideClick.daterangepicker', function(ev, picker) {
             if (opts.cancelOnOutsideClick) {
               return $scope.$apply(function() {
+                picker.cancelingClick = true;
                 return picker.clickCancel();
               });
             } else {
@@ -254,9 +255,13 @@
           var ref;
           if (date && (min || max)) {
             ref = [date, min, max].map(function(d) {
-              return moment(d);
+              if (d) {
+                return moment(d);
+              } else {
+                return d;
+              }
             }), date = ref[0], min = ref[1], max = ref[2];
-            return (min.isBefore(date) || min.isSame(date, 'day')) && (max.isSame(date, 'day') || max.isAfter(date));
+            return (!min || min.isBefore(date) || min.isSame(date, 'day')) && (!max || max.isSame(date, 'day') || max.isAfter(date));
           } else {
             return true;
           }
@@ -276,9 +281,9 @@
             modelCtrl.$validators[field] = function(value) {
               if (opts.singleDatePicker) {
                 if (field === 'min') {
-                  return value && validator(value, opts['minDate'], value);
+                  return !value || validator(value, opts['minDate'], value);
                 } else if (field === 'max') {
-                  return value && validator(value, value, opts['maxDate']);
+                  return !value || validator(value, value, opts['maxDate']);
                 }
               } else {
                 return value && validator(value[modelField], opts['minDate'], opts['maxDate']);
@@ -311,11 +316,14 @@
             }
             _init();
             if (newClearable) {
-              return el.on('cancel.daterangepicker', function() {
-                $scope.model = opts.singleDatePicker ? null : {
-                  startDate: null,
-                  endDate: null
-                };
+              return el.on('cancel.daterangepicker', function(ev, picker) {
+                if (!picker.cancelingClick) {
+                  $scope.model = opts.singleDatePicker ? null : {
+                    startDate: null,
+                    endDate: null
+                  };
+                }
+                picker.cancelingClick = null;
                 return $timeout(function() {
                   return $scope.$apply();
                 });

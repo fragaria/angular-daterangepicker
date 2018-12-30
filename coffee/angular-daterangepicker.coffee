@@ -1,6 +1,6 @@
-picker = angular.module('daterangepicker', [])
+pickerModule = angular.module('daterangepicker', [])
 
-picker.constant('dateRangePickerConfig',
+pickerModule.constant('dateRangePickerConfig',
   cancelOnOutsideClick: true
   locale:
     separator: ' - '
@@ -8,7 +8,7 @@ picker.constant('dateRangePickerConfig',
     clearLabel: 'Clear'
 )
 
-picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
+pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePickerConfig) ->
   require: 'ngModel'
   restrict: 'A'
   scope:
@@ -222,6 +222,8 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
       el.on 'outsideClick.daterangepicker', (ev, picker) ->
         if opts.cancelOnOutsideClick
           $scope.$apply ->
+            # need to prevent clearing if option is on
+            picker.cancelingClick = true
             picker.clickCancel()
         else
           picker.clickApply()
@@ -280,8 +282,12 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
     # Validation for our min/max
     _validateRange = (date, min, max) ->
       if date and (min or max)
-        [date, min, max] = [date, min, max].map (d) -> moment(d)
-        return (min.isBefore(date) or min.isSame(date, 'day')) and (max.isSame(date, 'day') or max.isAfter(date))
+        [date, min, max] = [date, min, max].map (d) ->
+          if (d)
+            moment(d)
+          else d
+        return (!min or min.isBefore(date) or min.isSame(date, 'day')) and
+               (!max or max.isSame(date, 'day') or max.isAfter(date))
       else true
 
     modelCtrl.$validators['invalid'] =(value, viewValue) ->
@@ -298,9 +304,9 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
         modelCtrl.$validators[field] = (value) ->
           if (opts.singleDatePicker)
             if field == 'min'
-              value and validator(value, opts['minDate'], value)
+              !value || validator(value, opts['minDate'], value)
             else if field == 'max'
-              value and validator(value, value, opts['maxDate'])
+              !value || validator(value, value, opts['maxDate'])
           else
             value and validator(value[modelField], opts['minDate'], opts['maxDate'])
 
@@ -326,8 +332,10 @@ picker.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRangePicker
           opts = _mergeOpts(opts, {locale: {cancelLabel: opts.locale.clearLabel}})
         _init()
         if newClearable
-          el.on 'cancel.daterangepicker', () ->
-            $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+          el.on 'cancel.daterangepicker', (ev, picker) ->
+            if (!picker.cancelingClick)
+              $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+            picker.cancelingClick = null
             $timeout -> $scope.$apply()
 
     $scope.$on '$destroy', ->
