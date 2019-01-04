@@ -61,8 +61,10 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
     _picker = null
 
     _clear = ->
-      _picker.setStartDate()
-      _picker.setEndDate()
+      # if no initial value given this will be called in $render before picker
+      if (_picker)
+        _picker.setStartDate()
+        _picker.setEndDate()
 
     _setDatePoint = (setter) ->
       (newValue) ->
@@ -125,7 +127,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
       if modelCtrl.$modelValue and opts.singleDatePicker
         _setStartDate(modelCtrl.$modelValue)
         _setEndDate(modelCtrl.$modelValue)
-      if modelCtrl.$modelValue and (modelCtrl.$modelValue.startDate || modelCtrl.$modelValue.endDate)
+      else if modelCtrl.$modelValue and (modelCtrl.$modelValue.startDate || modelCtrl.$modelValue.endDate)
         _setStartDate(modelCtrl.$modelValue.startDate)
         _setEndDate(modelCtrl.$modelValue.endDate)
       else _clear()
@@ -170,7 +172,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
         $scope.$apply () ->
           # this callback is triggered any time the calendar is changed, even if it wasn't applied
           # so a range is changed, but not applied and then clicked out of, this triggers when outsideClick calls hide
-          # so can't assign to model here
+          # therefore can't assign to model here
           # https://github.com/dangrossman/daterangepicker/issues/1156
           # $scope.model = if opts.singleDatePicker then startDate else {startDate, endDate, label}
           if (typeof opts.changeCallback == "function")
@@ -235,35 +237,20 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
           eventName = ev.type + '.' + ev.namespace
           $scope.$evalAsync(opts.eventHandlers[eventName])
 
-    _init()
+      # if model was already created and validation case changed this will catch that
+      # and update the model if it was null from previous but no longer invalid
+      modelCtrl.$validate()
+      if (!$scope.model)
+        el.trigger('change')
+
+    # init will be called by opt watcher
+    # _init()
 
     # Since model is an object whose parameters might not change while the value does,
-    # using same 'hack' angularjs's ngModelWatch uses
-#    $scope.$watch () ->
-#      modelValue = $scope.model
-#
-#      formatters = modelCtrl.$formatters
-#      idx = formatters.length
-#
-#      viewValue = modelValue
-#      while (idx--)
-#        viewValue = formatters[idx](viewValue)
-#
-#      if (modelCtrl.$viewValue != viewValue)
-#        # This will trigger the normal update process of if the model changes
-#        if (typeof modelCtrl.$processModelValue == "function")
-#          modelCtrl.$processModelValue()
-#        else
-#          # maintain angular compatibility with < 1.7
-#          if (typeof modelCtrl.$$updateEmptyClasses == "function")
-#            modelCtrl.$$updateEmptyClasses(viewValue)
-#          # maintain angular compatibility with < 1.6
-#          modelCtrl.$viewValue = modelCtrl.$$lastCommittedViewValue = viewValue
-#          modelCtrl.$render()
-
+    # need to handle what ngModelWatch doesn't
     $scope.$watch (-> getViewValue($scope.model)) , (viewValue) ->
-#      if (modelCtrl.$invalid)
-#        modelCtrl.$viewValue = null
+    #  if (modelCtrl.$invalid)
+    #    modelCtrl.$viewValue = null
       if (typeof modelCtrl.$processModelValue == "function")
         modelCtrl.$processModelValue()
         # will skip render if view wasn't updated, but view is skipped
@@ -279,6 +266,14 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
         modelCtrl.$render()
 
 
+    modelCtrl.$validators['invalid'] =(value, viewValue) ->
+      applicable = attrs.required && !modelCtrl.$isEmpty(viewValue)
+      if opts.singleDatePicker
+        check = value && value.isValid()
+      else
+        check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid()
+      return !applicable || !!check
+
     # Validation for our min/max
     _validateRange = (date, min, max) ->
       if date and (min or max)
@@ -290,40 +285,38 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
                (!max or max.isSame(date, 'day') or max.isAfter(date))
       else true
 
-    modelCtrl.$validators['invalid'] =(value, viewValue) ->
-      applicable = attrs.required && !modelCtrl.$isEmpty(viewValue)
-      if opts.singleDatePicker
-        check = value && value.isValid()
-      else
-        check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid()
-      return !applicable || !!check
-
     # Add validation/watchers for our min/max fields
     _initBoundaryField = (field, validator, modelField, optName) ->
-      if attrs[field] || opts[optName]
-        modelCtrl.$validators[field] = (value) ->
-          if (opts.singleDatePicker)
-            if field == 'min'
-              !value || validator(value, opts['minDate'], value)
-            else if field == 'max'
-              !value || validator(value, value, opts['maxDate'])
-          else
-            value and validator(value[modelField], opts['minDate'], opts['maxDate'])
+      modelCtrl.$validators[field] = (value) ->
+        # always have validator so if min/max change, this works
+        # just return true if not set
+        if (!opts[optName])
+          return true
 
-        if attrs[field]
-          $scope.$watch field, (date) ->
-            opts[optName] = if date then moment(date) else false
-            _init()
+        if (opts.singleDatePicker)
+          if field == 'min'
+            !value || validator(value, opts['minDate'], value)
+          else if field == 'max'
+            !value || validator(value, value, opts['maxDate'])
+        else
+          value and validator(value[modelField], opts['minDate'], opts['maxDate'])
+
+      if attrs[field]
+        $scope.$watch field, (date) ->
+          opts[optName] = if date then moment(date) else false
+          if (_picker)
+            _picker[optName] = opts[optName]
+            $timeout -> modelCtrl.$validate()
+
 
     _initBoundaryField('min', _validateRange, 'startDate', 'minDate')
     _initBoundaryField('max', _validateRange, 'endDate', 'maxDate')
 
     # Watch our options
-    if attrs.options
-      $scope.$watch 'opts', (newOpts) ->
-        opts = _mergeOpts(opts, newOpts)
-        _init()
-      , true
+    $scope.$watch 'opts', (newOpts = {}) ->
+      opts = _mergeOpts(opts, newOpts)
+      _init()
+    , true
 
     # Watch clearable flag
     if attrs.clearable
@@ -335,6 +328,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
           el.on 'cancel.daterangepicker', (ev, picker) ->
             if (!picker.cancelingClick)
               $scope.model = if opts.singleDatePicker then null else {startDate: null, endDate: null}
+              el.val("")
             picker.cancelingClick = null
             $timeout -> $scope.$apply()
 

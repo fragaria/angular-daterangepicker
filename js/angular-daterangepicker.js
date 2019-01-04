@@ -12,7 +12,7 @@
     }
   });
 
-  pickerModule.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  pickerModule.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -71,8 +71,10 @@
         opts = _mergeOpts({}, angular.copy(dateRangePickerConfig), customOpts);
         _picker = null;
         _clear = function() {
-          _picker.setStartDate();
-          return _picker.setEndDate();
+          if (_picker) {
+            _picker.setStartDate();
+            return _picker.setEndDate();
+          }
         };
         _setDatePoint = function(setter) {
           return function(newValue) {
@@ -130,8 +132,7 @@
           if (modelCtrl.$modelValue && opts.singleDatePicker) {
             _setStartDate(modelCtrl.$modelValue);
             _setEndDate(modelCtrl.$modelValue);
-          }
-          if (modelCtrl.$modelValue && (modelCtrl.$modelValue.startDate || modelCtrl.$modelValue.endDate)) {
+          } else if (modelCtrl.$modelValue && (modelCtrl.$modelValue.startDate || modelCtrl.$modelValue.endDate)) {
             _setStartDate(modelCtrl.$modelValue.startDate);
             _setEndDate(modelCtrl.$modelValue.endDate);
           } else {
@@ -167,7 +168,7 @@
           return !(angular.isString(val) && val.length > 0);
         };
         _init = function() {
-          var eventType, results;
+          var eventType;
           el.daterangepicker(angular.extend(opts, {
             autoUpdateInput: false
           }), function(startDate, endDate, label) {
@@ -226,17 +227,18 @@
               return picker.clickApply();
             }
           });
-          results = [];
           for (eventType in opts.eventHandlers) {
-            results.push(el.on(eventType, function(ev, picker) {
+            el.on(eventType, function(ev, picker) {
               var eventName;
               eventName = ev.type + '.' + ev.namespace;
               return $scope.$evalAsync(opts.eventHandlers[eventName]);
-            }));
+            });
           }
-          return results;
+          modelCtrl.$validate();
+          if (!$scope.model) {
+            return el.trigger('change');
+          }
         };
-        _init();
         $scope.$watch((function() {
           return getViewValue($scope.model);
         }), function(viewValue) {
@@ -251,6 +253,16 @@
             return modelCtrl.$render();
           }
         });
+        modelCtrl.$validators['invalid'] = function(value, viewValue) {
+          var applicable, check;
+          applicable = attrs.required && !modelCtrl.$isEmpty(viewValue);
+          if (opts.singleDatePicker) {
+            check = value && value.isValid();
+          } else {
+            check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid();
+          }
+          return !applicable || !!check;
+        };
         _validateRange = function(date, min, max) {
           var ref;
           if (date && (min || max)) {
@@ -266,45 +278,42 @@
             return true;
           }
         };
-        modelCtrl.$validators['invalid'] = function(value, viewValue) {
-          var applicable, check;
-          applicable = attrs.required && !modelCtrl.$isEmpty(viewValue);
-          if (opts.singleDatePicker) {
-            check = value && value.isValid();
-          } else {
-            check = value && value.startDate && value.startDate.isValid() && value.endDate && value.endDate.isValid();
-          }
-          return !applicable || !!check;
-        };
         _initBoundaryField = function(field, validator, modelField, optName) {
-          if (attrs[field] || opts[optName]) {
-            modelCtrl.$validators[field] = function(value) {
-              if (opts.singleDatePicker) {
-                if (field === 'min') {
-                  return !value || validator(value, opts['minDate'], value);
-                } else if (field === 'max') {
-                  return !value || validator(value, value, opts['maxDate']);
-                }
-              } else {
-                return value && validator(value[modelField], opts['minDate'], opts['maxDate']);
-              }
-            };
-            if (attrs[field]) {
-              return $scope.$watch(field, function(date) {
-                opts[optName] = date ? moment(date) : false;
-                return _init();
-              });
+          modelCtrl.$validators[field] = function(value) {
+            if (!opts[optName]) {
+              return true;
             }
+            if (opts.singleDatePicker) {
+              if (field === 'min') {
+                return !value || validator(value, opts['minDate'], value);
+              } else if (field === 'max') {
+                return !value || validator(value, value, opts['maxDate']);
+              }
+            } else {
+              return value && validator(value[modelField], opts['minDate'], opts['maxDate']);
+            }
+          };
+          if (attrs[field]) {
+            return $scope.$watch(field, function(date) {
+              opts[optName] = date ? moment(date) : false;
+              if (_picker) {
+                _picker[optName] = opts[optName];
+                return $timeout(function() {
+                  return modelCtrl.$validate();
+                });
+              }
+            });
           }
         };
         _initBoundaryField('min', _validateRange, 'startDate', 'minDate');
         _initBoundaryField('max', _validateRange, 'endDate', 'maxDate');
-        if (attrs.options) {
-          $scope.$watch('opts', function(newOpts) {
-            opts = _mergeOpts(opts, newOpts);
-            return _init();
-          }, true);
-        }
+        $scope.$watch('opts', function(newOpts) {
+          if (newOpts == null) {
+            newOpts = {};
+          }
+          opts = _mergeOpts(opts, newOpts);
+          return _init();
+        }, true);
         if (attrs.clearable) {
           $scope.$watch('clearable', function(newClearable) {
             if (newClearable) {
@@ -322,6 +331,7 @@
                     startDate: null,
                     endDate: null
                   };
+                  el.val("");
                 }
                 picker.cancelingClick = null;
                 return $timeout(function() {
@@ -336,6 +346,6 @@
         });
       }
     };
-  }]);
+  });
 
 }).call(this);
