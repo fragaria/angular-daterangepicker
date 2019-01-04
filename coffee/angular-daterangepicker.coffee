@@ -187,6 +187,8 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
       _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""))
 
       el.on 'show.daterangepicker', (ev, picker) ->
+        el.addClass('picker-open')
+
         # there are some cases where daterangepicker is buggy and the date won't match
         # make sure it does here
         # (if doing it here, does it really need to be set in the $render? probably for consistency)
@@ -202,6 +204,9 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
               _setEndDate($scope.model.endDate)
           picker.updateView()
           return
+
+      el.on 'hide.daterangepicker', (ev, picker) ->
+        el.removeClass('picker-open')
 
       el.on 'apply.daterangepicker', (ev, picker) ->
         $scope.$apply ->

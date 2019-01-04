@@ -12,7 +12,7 @@
     }
   });
 
-  pickerModule.directive('dateRangePicker', function($compile, $timeout, $parse, dateRangePickerConfig) {
+  pickerModule.directive('dateRangePicker', ['$compile', '$timeout', '$parse', 'dateRangePickerConfig', function($compile, $timeout, $parse, dateRangePickerConfig) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -183,6 +183,7 @@
           _picker.container.hide();
           _picker.container.addClass((opts.pickerClasses || "") + " " + (attrs['pickerClasses'] || ""));
           el.on('show.daterangepicker', function(ev, picker) {
+            el.addClass('picker-open');
             return $scope.$apply(function() {
               if (opts.singleDatePicker) {
                 if (!picker.startDate.isSame($scope.model)) {
@@ -199,6 +200,9 @@
               }
               picker.updateView();
             });
+          });
+          el.on('hide.daterangepicker', function(ev, picker) {
+            return el.removeClass('picker-open');
           });
           el.on('apply.daterangepicker', function(ev, picker) {
             return $scope.$apply(function() {
@@ -346,6 +350,6 @@
         });
       }
     };
-  });
+  }]);
 
 }).call(this);
