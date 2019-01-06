@@ -17,3 +17,4 @@ Many thanks to following folks (ordered by date of contribution):
 * [Dawid Dominiak](https://github.com/dawiddominiak)
 * [Lior Chen](https://github.com/liorch88)
 * [Hung Le](https://github.com/lexhung)
+* [Adam Segal](https://github.com/phazei)
