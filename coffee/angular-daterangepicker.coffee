@@ -2,6 +2,7 @@ pickerModule = angular.module('daterangepicker', [])
 
 pickerModule.constant('dateRangePickerConfig',
   cancelOnOutsideClick: true
+  moment: window.moment
   locale:
     separator: ' - '
     format: 'YYYY-MM-DD'
@@ -68,7 +69,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
 
     _setDatePoint = (setter) ->
       (newValue) ->
-        if (newValue && (!moment.isMoment(newValue) || newValue.isValid()))
+        if (newValue && (!opts.moment.isMoment(newValue) || newValue.isValid()))
           newValue = moment(newValue)
         else
           # keep previous value if invalid
@@ -102,7 +103,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
 
     getViewValue =(model) ->
       f = (date) ->
-        if not moment.isMoment(date)
+        if not opts.moment.isMoment(date)
         then moment(date).format(opts.locale.format)
         else date.format(opts.locale.format)
 
