@@ -169,14 +169,14 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
       # disable autoUpdateInput, can't handle empty values without it.  Our callback here will
       # update our $viewValue, which triggers the $parsers
       el.daterangepicker angular.extend(opts, {autoUpdateInput: false}), (startDate, endDate, label) ->
-        $scope.$apply () ->
+        $scope.$apply () =>
           # this callback is triggered any time the calendar is changed, even if it wasn't applied
           # so a range is changed, but not applied and then clicked out of, this triggers when outsideClick calls hide
           # therefore can't assign to model here
           # https://github.com/dangrossman/daterangepicker/issues/1156
           # $scope.model = if opts.singleDatePicker then startDate else {startDate, endDate, label}
           if (typeof opts.changeCallback == "function")
-            opts.changeCallback.apply(this, arguments)
+            opts.changeCallback.apply(this, [startDate, endDate, label])
 
       # Needs to be after daterangerpicker has been created, otherwise
       # watchers that reinit will be attached to old daterangepicker instance.
