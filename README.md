@@ -18,6 +18,11 @@ The easiest way to install the picker is:
 ```
 bower install angular-daterangepicker --save
 ```
+## Installation via npm
+```
+npm install --save @fragaria/angular-daterangepicker
+```
+
 ## Manual installation
 This directive depends on [Bootstrap Datepicker](https://github.com/dangrossman/bootstrap-daterangepicker), [Bootstrap](http://getbootstrap.com), [Moment.js](http://momentjs.com/) and [jQuery](http://jquery.com/).
 Download dependencies above and then use [minified](js/angular-daterangepicker.min.js) or [normal](angular-daterangepicker.js) version.
