@@ -78,8 +78,8 @@
         };
         _setDatePoint = function(setter) {
           return function(newValue) {
-            if (newValue && (!moment.isMoment(newValue) || newValue.isValid())) {
-              newValue = moment(newValue);
+            if (newValue && (!opts.moment.isMoment(newValue) || newValue.isValid())) {
+              newValue = opts.moment(newValue);
             } else {
               return;
             }
@@ -109,8 +109,8 @@
         getViewValue = function(model) {
           var f, viewValue;
           f = function(date) {
-            if (!moment.isMoment(date)) {
-              return moment(date).format(opts.locale.format);
+            if (!opts.moment.isMoment(date)) {
+              return opts.moment(date).format(opts.locale.format);
             } else {
               return date.format(opts.locale.format);
             }
@@ -146,7 +146,7 @@
           var f, objValue, x;
           f = function(value) {
             var date;
-            date = moment(value, opts.locale.format);
+            date = opts.moment(value, opts.locale.format);
             return (date.isValid() && date) || null;
           };
           objValue = opts.singleDatePicker ? null : {
@@ -272,7 +272,7 @@
           if (date && (min || max)) {
             ref = [date, min, max].map(function(d) {
               if (d) {
-                return moment(d);
+                return opts.moment(d);
               } else {
                 return d;
               }
@@ -299,7 +299,7 @@
           };
           if (attrs[field]) {
             return $scope.$watch(field, function(date) {
-              opts[optName] = date ? moment(date) : false;
+              opts[optName] = date ? opts.moment(date) : false;
               if (_picker) {
                 _picker[optName] = opts[optName];
                 return $timeout(function() {

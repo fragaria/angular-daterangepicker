@@ -2,6 +2,7 @@ pickerModule = angular.module('daterangepicker', [])
 
 pickerModule.constant('dateRangePickerConfig',
   cancelOnOutsideClick: true
+  moment: window.moment
   locale:
     separator: ' - '
     format: 'YYYY-MM-DD'
@@ -68,8 +69,8 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
 
     _setDatePoint = (setter) ->
       (newValue) ->
-        if (newValue && (!moment.isMoment(newValue) || newValue.isValid()))
-          newValue = moment(newValue)
+        if (newValue && (!opts.moment.isMoment(newValue) || newValue.isValid()))
+          newValue = opts.moment(newValue)
         else
           # keep previous value if invalid
           # set newValue = {} to default it
@@ -102,8 +103,8 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
 
     getViewValue =(model) ->
       f = (date) ->
-        if not moment.isMoment(date)
-        then moment(date).format(opts.locale.format)
+        if not opts.moment.isMoment(date)
+        then opts.moment(date).format(opts.locale.format)
         else date.format(opts.locale.format)
 
       if opts.singleDatePicker and model
@@ -140,7 +141,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
     modelCtrl.$parsers.push (viewValue) ->
       # Parse the string value
       f = (value) ->
-        date = moment(value, opts.locale.format)
+        date = opts.moment(value, opts.locale.format)
         return (date.isValid() && date) || null
 
       objValue = if opts.singleDatePicker then null else
@@ -284,7 +285,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
       if date and (min or max)
         [date, min, max] = [date, min, max].map (d) ->
           if (d)
-            moment(d)
+            opts.moment(d)
           else d
         return (!min or min.isBefore(date) or min.isSame(date, 'day')) and
                (!max or max.isSame(date, 'day') or max.isAfter(date))
@@ -308,7 +309,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
 
       if attrs[field]
         $scope.$watch field, (date) ->
-          opts[optName] = if date then moment(date) else false
+          opts[optName] = if date then opts.moment(date) else false
           if (_picker)
             _picker[optName] = opts[optName]
             $timeout -> modelCtrl.$validate()
