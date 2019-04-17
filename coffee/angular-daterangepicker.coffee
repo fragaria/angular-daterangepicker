@@ -43,7 +43,7 @@ pickerModule.directive 'dateRangePicker', ($compile, $timeout, $parse, dateRange
         updateOn = (modelCtrl.$options && modelCtrl.$options.updateOn) || ""
         allowInvalid = !!(modelCtrl.$options && modelCtrl.$options.allowInvalid)
 
-      if (!updateOn.includes("change"))
+      if (updateOn.indexOf("change") == -1)
         if (typeof modelCtrl.$overrideModelOptions == 'function')
           updateOn += " change"
           modelCtrl.$overrideModelOptions({'*':'$inherit', updateOn})
