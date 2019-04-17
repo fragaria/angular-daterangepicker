@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.node-xmlhttprequest-sync-[0-9]*
+coverage
+coverage.json
+package-lock.json
+.eslintrc.js
+.travis.yml
+.github
+.gitignore
+.gitmodules
